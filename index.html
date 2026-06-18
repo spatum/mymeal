@@ -69,7 +69,7 @@
 // ─────────────────────────────────────────────
 // ⚠️  INSERISCI QUI LA TUA API KEY ANTHROPIC
 //     Ottienila su: https://console.anthropic.com/
-MYMEAL_API_KEY
+const API_KEY = "";
 const PROXY_URL = "https://mymeal-proxy.spatum.workers.dev";
 // ─────────────────────────────────────────────
 
@@ -98,7 +98,7 @@ function save(){
 }
 
 async function claude(prompt){
-  const res=await fetch("https://api.anthropic.com/v1/messages",{
+  const res=await fetch("/.netlify/functions/claude",{
     method:"POST",
     headers:{"Content-Type":"application/json","x-api-key":API_KEY,"anthropic-version":"2023-06-01"},
     body:JSON.stringify({model:"claude-sonnet-4-6",max_tokens:1000,messages:[{role:"user",content:prompt}]})

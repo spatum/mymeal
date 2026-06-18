@@ -1,0 +1,307 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>MyMeal</title>
+  <meta name="theme-color" content="#e8472a" />
+  <meta name="mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-title" content="MyMeal" />
+  <link rel="manifest" href="manifest.json" />
+  <style>
+    *{box-sizing:border-box;margin:0;padding:0}
+    body{font-family:'Segoe UI',sans-serif;background:#f5f5f0;min-height:100vh}
+    #app{max-width:480px;margin:0 auto}
+    .header{background:linear-gradient(135deg,#e8472a,#c73820);padding:20px 16px 16px;color:white}
+    .header h1{font-size:24px;font-weight:700}
+    .header p{font-size:12px;opacity:.85;margin-top:2px}
+    .tabs{display:flex;background:white;border-bottom:2px solid #eee}
+    .tab-btn{flex:1;padding:12px 0;border:none;background:none;cursor:pointer;font-weight:400;color:#888;border-bottom:2px solid transparent;font-size:14px;transition:all .2s}
+    .tab-btn.active{font-weight:700;color:#e8472a;border-bottom:2px solid #e8472a}
+    .content{padding:16px}
+    .card{background:white;border-radius:12px;padding:16px;margin-bottom:10px;box-shadow:0 2px 8px rgba(0,0,0,.06)}
+    .row{display:flex;gap:8px}
+    input,select,textarea{font-family:inherit}
+    .inp{flex:1;padding:10px 12px;border:1.5px solid #ddd;border-radius:8px;font-size:14px;outline:none}
+    .btn{padding:10px 16px;border:none;border-radius:8px;cursor:pointer;font-weight:700;font-size:14px}
+    .btn-red{background:#e8472a;color:white}
+    .btn-red:disabled{background:#ccc;cursor:not-allowed}
+    .btn-green{background:#4caf50;color:white;flex:1;padding:12px 0}
+    .btn-ghost{background:#fff0f0;color:#e8472a;border:1.5px solid #e8472a;padding:12px 16px}
+    .btn-sm{font-size:12px;padding:4px 10px;border-radius:6px;border:1px solid #e8472a;color:#e8472a;background:none;cursor:pointer;font-weight:600}
+    .chip-row{display:flex;gap:8px;overflow-x:auto;padding-bottom:4px;margin-bottom:12px}
+    .chip{padding:6px 14px;border-radius:20px;border:none;cursor:pointer;white-space:nowrap;font-size:13px}
+    .chip.on{background:#e8472a;color:white;font-weight:700}
+    .chip.off{background:#eee;color:#555}
+    .recipe-card{background:white;border-radius:12px;padding:14px;margin-bottom:10px;box-shadow:0 2px 8px rgba(0,0,0,.06);cursor:pointer;border-left:4px solid #e8472a}
+    .recipe-card h3{font-weight:700;font-size:15px;color:#222;margin-bottom:4px}
+    .meta{display:flex;gap:12px;font-size:12px;color:#888;flex-wrap:wrap}
+    .step{display:flex;gap:10px;margin-bottom:10px}
+    .step-num{min-width:24px;height:24px;border-radius:50%;background:#e8472a;color:white;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;flex-shrink:0}
+    .note-ai{background:#fff8f0;border-radius:8px;padding:12px;margin-bottom:16px;font-size:13px;color:#666;border-left:3px solid #ff9800}
+    .note-personal{background:#f0f7ff;border-radius:8px;padding:12px;font-size:14px;color:#333;border-left:3px solid #2196f3;line-height:1.6;white-space:pre-wrap}
+    .check-box{width:22px;height:22px;border-radius:6px;cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0;border:2px solid #ddd;background:white}
+    .check-box.on{background:#4caf50;border-color:#4caf50}
+    .cat-dot{width:10px;height:10px;border-radius:50%}
+    .badge{background:#e8472a;color:white;border-radius:50%;width:28px;height:28px;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:13px}
+    .empty{text-align:center;color:#aaa;padding:40px 0}
+    .empty .ico{font-size:48px;margin-bottom:12px}
+    .err{color:#e8472a;font-size:13px;margin-top:8px}
+    .back{background:none;border:none;color:#e8472a;cursor:pointer;font-size:14px;margin-bottom:12px;font-weight:700}
+    .sec-title{font-weight:700;font-size:15px;margin-bottom:8px;color:#333}
+    .ing-row{padding:6px 0;border-bottom:1px solid #f0f0f0;font-size:14px;color:#444}
+    label.lbl{font-size:13px;color:#888;display:block;margin-bottom:4px}
+    select.sel{padding:8px 12px;border:1.5px solid #ddd;border-radius:8px;font-size:14px;width:100%;background:#fafafa}
+  </style>
+</head>
+<body>
+<div id="app">
+  <div class="header"><h1>🍴 MyMeal</h1><p>Il tuo ricettario smart</p></div>
+  <div class="tabs">
+    <button class="tab-btn active" onclick="nav('ricette')">🍽 Ricette</button>
+    <button class="tab-btn" onclick="nav('ricettari')">📚 Ricettari</button>
+    <button class="tab-btn" onclick="nav('spesa')">🛒 Spesa</button>
+  </div>
+  <div class="content" id="content"></div>
+</div>
+<script>
+// ─────────────────────────────────────────────
+// ⚠️  INSERISCI QUI LA TUA API KEY ANTHROPIC
+//     Ottienila su: https://console.anthropic.com/
+MYMEAL_API_KEY
+const PROXY_URL = "https://mymeal-proxy.spatum.workers.dev";
+// ─────────────────────────────────────────────
+
+const DEFAULT_CB = ["Colazione","Pranzo","Cena","Dolci","Altro"];
+const CAT_COLORS = {"Frutta e Verdura":"#4caf50","Carne e Pesce":"#f44336","Latticini":"#2196f3","Pane e Cereali":"#ff9800","Condimenti":"#9c27b0","Surgelati":"#00bcd4","Altro":"#607d8b"};
+const CB_ICONS = {Colazione:"☀️",Pranzo:"🍝",Cena:"🌙",Dolci:"🍰"};
+
+let S = {
+  tab:"ricette", recipes:[], cookbooks:[...DEFAULT_CB], shopping:[],
+  selected:null, filter:"Tutti", search:"", loading:false, error:"",
+  addingToList:false, showAddCb:false, editingNote:false, noteText:""
+};
+
+function load(){
+  try{
+    const r=localStorage.getItem("mm_r"),c=localStorage.getItem("mm_c"),s=localStorage.getItem("mm_s");
+    if(r)S.recipes=JSON.parse(r);
+    if(c)S.cookbooks=JSON.parse(c);
+    if(s)S.shopping=JSON.parse(s);
+  }catch(e){}
+}
+function save(){
+  localStorage.setItem("mm_r",JSON.stringify(S.recipes));
+  localStorage.setItem("mm_c",JSON.stringify(S.cookbooks));
+  localStorage.setItem("mm_s",JSON.stringify(S.shopping));
+}
+
+async function claude(prompt){
+  const res=await fetch("https://api.anthropic.com/v1/messages",{
+    method:"POST",
+    headers:{"Content-Type":"application/json","x-api-key":API_KEY,"anthropic-version":"2023-06-01"},
+    body:JSON.stringify({model:"claude-sonnet-4-6",max_tokens:1000,messages:[{role:"user",content:prompt}]})
+  });
+  const d=await res.json();
+  if(d.error)throw new Error(d.error.message);
+  return d.content.map(b=>b.text||"").join("\n").replace(/```json|```/g,"").trim();
+}
+
+async function importRecipe(){
+  const url=document.getElementById("urlInp").value.trim();
+  if(!url)return;
+  S.loading=true;S.error="";render();
+  try{
+    const j=await claude(`Analizza questa URL di ricetta: ${url}
+Rispondi SOLO con JSON valido senza backtick:
+{"titolo":"...","ingredienti":["..."],"istruzioni":["..."],"tempoPreparazione":"...","porzioni":"...","note":""}`);
+    const r={...JSON.parse(j),id:Date.now(),url,ricettario:"Altro",dataAggiunta:new Date().toLocaleDateString("it-IT"),notaPersonale:""};
+    S.recipes.unshift(r);save();S.selected=r;S.editingNote=false;
+    document.getElementById("urlInp").value="";
+  }catch(e){S.error="Impossibile estrarre la ricetta. Prova con un altro URL.";}
+  S.loading=false;render();
+}
+
+async function addToShopping(){
+  S.addingToList=true;render();
+  try{
+    const j=await claude(`Organizza per corsia supermercato: ${S.selected.ingredienti.join(", ")}
+Non duplicare: ${JSON.stringify(S.shopping.map(i=>i.nome))}
+Rispondi SOLO con JSON valido senza backtick:
+{"items":[{"nome":"...","categoria":"Frutta e Verdura|Carne e Pesce|Latticini|Pane e Cereali|Condimenti|Surgelati|Altro","checked":false}]}`);
+    const res=JSON.parse(j);
+    S.shopping=[...S.shopping,...res.items];save();
+    S.selected=null;nav("spesa");
+  }catch(e){S.error="Errore aggiunta alla spesa.";}
+  S.addingToList=false;render();
+}
+
+function saveNote(){
+  S.recipes=S.recipes.map(r=>r.id===S.selected.id?{...r,notaPersonale:S.noteText}:r);
+  S.selected={...S.selected,notaPersonale:S.noteText};
+  save();S.editingNote=false;render();
+}
+
+function nav(t){S.tab=t;S.selected=null;S.error="";S.editingNote=false;render();}
+
+function render(){
+  document.querySelectorAll(".tab-btn").forEach((b,i)=>{
+    b.classList.toggle("active",["ricette","ricettari","spesa"][i]===S.tab);
+  });
+  const c=document.getElementById("content");
+  if(S.tab==="ricette")c.innerHTML=S.selected?detailHTML():listHTML();
+  if(S.tab==="ricettari")c.innerHTML=cbHTML();
+  if(S.tab==="spesa")c.innerHTML=shoppingHTML();
+}
+
+function listHTML(){
+  const filtered=S.recipes.filter(r=>{
+    const mc=S.filter==="Tutti"||r.ricettario===S.filter;
+    const q=S.search.toLowerCase();
+    const ms=!q||r.titolo?.toLowerCase().includes(q)||r.ingredienti?.some(i=>i.toLowerCase().includes(q))||r.notaPersonale?.toLowerCase().includes(q);
+    return mc&&ms;
+  });
+  const chips=["Tutti",...S.cookbooks].map(c=>`<button class="chip ${S.filter===c?'on':'off'}" onclick="S.filter='${c}';render()">${c}</button>`).join("");
+  const list=filtered.length===0
+    ?`<div class="empty"><div class="ico">🍳</div><div>${S.search?`Nessun risultato per "${S.search}"`:"Nessuna ricetta ancora.\nIncolla un URL per iniziare!"}</div></div>`
+    :filtered.map(r=>`<div class="recipe-card" onclick="S.selected=S.recipes.find(x=>x.id===${r.id});S.noteText=S.selected.notaPersonale||'';S.editingNote=false;render()">
+      <h3>${r.titolo}</h3>
+      <div class="meta">
+        ${r.tempoPreparazione?`<span>⏱ ${r.tempoPreparazione}</span>`:""}
+        ${r.porzioni?`<span>👥 ${r.porzioni} porz.</span>`:""}
+        <span>📚 ${r.ricettario}</span>
+        ${r.notaPersonale?`<span>📝 Nota</span>`:""}
+        <span style="margin-left:auto">📅 ${r.dataAggiunta}</span>
+      </div></div>`).join("");
+  return `
+    <div class="card">
+      <div style="font-weight:700;font-size:15px;margin-bottom:10px;color:#333">📥 Importa da URL</div>
+      <div class="row">
+        <input id="urlInp" class="inp" placeholder="Incolla link Instagram, TikTok, sito..." onkeydown="if(event.key==='Enter')importRecipe()"/>
+        <button class="btn btn-red" onclick="importRecipe()" ${S.loading?"disabled":""}>
+          ${S.loading?"⏳":"Importa"}
+        </button>
+      </div>
+      ${S.error?`<div class="err">${S.error}</div>`:""}
+    </div>
+    <div style="margin-bottom:12px">
+      <input class="inp" style="width:100%;padding:10px 14px;border-radius:10px;box-shadow:0 1px 4px rgba(0,0,0,.05)"
+        placeholder="🔍 Cerca per titolo, ingrediente o nota..." value="${S.search}"
+        oninput="S.search=this.value;render()" />
+    </div>
+    <div class="chip-row">${chips}</div>
+    ${list}`;
+}
+
+function detailHTML(){
+  const r=S.selected;
+  const opts=S.cookbooks.map(c=>`<option ${r.ricettario===c?"selected":""}>${c}</option>`).join("");
+  const ings=(r.ingredienti||[]).map(i=>`<div class="ing-row">• ${i}</div>`).join("");
+  const steps=(r.istruzioni||[]).map((s,i)=>`<div class="step"><div class="step-num">${i+1}</div><div style="font-size:14px;color:#444;line-height:1.5">${s}</div></div>`).join("");
+  const noteSection=S.editingNote?`
+    <textarea id="noteTa" rows="4" style="width:100%;padding:10px 12px;border:1.5px solid #e8472a;border-radius:8px;font-size:14px;outline:none;resize:vertical;line-height:1.5"
+      placeholder="Scrivi varianti, consigli, modifiche...">${S.noteText}</textarea>
+    <div class="row" style="margin-top:8px">
+      <button class="btn btn-red" style="flex:1;padding:10px 0" onclick="S.noteText=document.getElementById('noteTa').value;saveNote()">💾 Salva nota</button>
+      <button class="btn" style="background:#f5f5f5;color:#666;padding:10px 16px" onclick="S.editingNote=false;render()">Annulla</button>
+    </div>`
+    :r.notaPersonale?`<div class="note-personal">${r.notaPersonale}</div>`
+    :`<div style="font-size:13px;color:#bbb;font-style:italic">Nessuna nota. Premi "+ Aggiungi" per annotare varianti o consigli.</div>`;
+  return `
+    <button class="back" onclick="S.selected=null;S.editingNote=false;render()">← Torna alle ricette</button>
+    <div class="card">
+      <div style="font-weight:800;font-size:20px;color:#222;margin-bottom:8px">${r.titolo}</div>
+      <div class="meta" style="margin-bottom:16px">
+        ${r.tempoPreparazione?`<span>⏱ ${r.tempoPreparazione}</span>`:""}
+        ${r.porzioni?`<span>👥 ${r.porzioni} porzioni</span>`:""}
+      </div>
+      <div style="margin-bottom:16px">
+        <label class="lbl">📚 Ricettario</label>
+        <select class="sel" onchange="S.recipes=S.recipes.map(x=>x.id===${r.id}?{...x,ricettario:this.value}:x);S.selected={...S.selected,ricettario:this.value};save();render()">${opts}</select>
+      </div>
+      <div style="margin-bottom:16px"><div class="sec-title">🧂 Ingredienti</div>${ings}</div>
+      <div style="margin-bottom:16px"><div class="sec-title">📋 Preparazione</div>${steps}</div>
+      ${r.note?`<div class="note-ai">📝 ${r.note}</div>`:""}
+      <div style="margin-bottom:16px">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px">
+          <div class="sec-title" style="margin:0">✏️ Note personali</div>
+          ${!S.editingNote?`<button class="btn-sm" onclick="S.noteText='${(r.notaPersonale||"").replace(/'/g,"\\'")}';S.editingNote=true;render()">${r.notaPersonale?"Modifica":"+ Aggiungi"}</button>`:""}
+        </div>
+        ${noteSection}
+      </div>
+      ${r.url?`<div style="font-size:12px;color:#aaa;margin-bottom:16px;word-break:break-all">🔗 ${r.url}</div>`:""}
+      <div class="row">
+        <button class="btn btn-green" onclick="addToShopping()" ${S.addingToList?"disabled":""}>
+          ${S.addingToList?"⏳ Aggiunta...":"🛒 Aggiungi alla spesa"}
+        </button>
+        <button class="btn btn-ghost" onclick="if(confirm('Eliminare questa ricetta?')){S.recipes=S.recipes.filter(x=>x.id!==${r.id});S.selected=null;save();render()}">🗑</button>
+      </div>
+    </div>`;
+}
+
+function cbHTML(){
+  const form=S.showAddCb?`<div class="card"><div class="row">
+    <input id="cbInp" class="inp" placeholder="Nome ricettario..." onkeydown="if(event.key==='Enter')addCb()"/>
+    <button class="btn btn-red" onclick="addCb()">Crea</button>
+  </div></div>`:"";
+  const list=S.cookbooks.map(name=>{
+    const count=S.recipes.filter(r=>r.ricettario===name).length;
+    const del=!DEFAULT_CB.includes(name)?`<button onclick="event.stopPropagation();S.cookbooks=S.cookbooks.filter(c=>c!=='${name}');save();render()" style="background:none;border:none;cursor:pointer;color:#ccc;font-size:18px">×</button>`:"";
+    return `<div class="card" style="cursor:pointer;display:flex;align-items:center;justify-content:space-between" onclick="S.filter='${name}';nav('ricette')">
+      <div><div style="font-weight:700;font-size:15px;color:#222">${CB_ICONS[name]||"📁"} ${name}</div>
+      <div style="font-size:13px;color:#888;margin-top:2px">${count} ricett${count===1?"a":"e"}</div></div>
+      <div style="display:flex;align-items:center;gap:8px"><div class="badge">${count}</div>${del}</div>
+    </div>`;
+  }).join("");
+  return `<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px">
+    <div style="font-weight:700;font-size:16px">I tuoi ricettari</div>
+    <button class="btn btn-red" style="padding:8px 14px;font-size:13px" onclick="S.showAddCb=!S.showAddCb;render()">+ Nuovo</button>
+  </div>${form}${list}`;
+}
+
+function addCb(){
+  const v=document.getElementById("cbInp")?.value.trim();
+  if(!v||S.cookbooks.includes(v))return;
+  S.cookbooks.push(v);S.showAddCb=false;save();render();
+}
+
+function shoppingHTML(){
+  const grouped=S.shopping.reduce((acc,item,idx)=>{
+    const cat=item.categoria||"Altro";
+    if(!acc[cat])acc[cat]=[];
+    acc[cat].push({...item,idx});return acc;
+  },{});
+  const clearBtn=S.shopping.some(i=>i.checked)
+    ?`<button class="btn" style="padding:8px 14px;background:#f44336;color:white;font-size:13px" onclick="S.shopping=S.shopping.filter(i=>!i.checked);save();render()">🗑 Rimuovi spuntati</button>`:"";
+  if(!S.shopping.length)return`<div class="empty"><div class="ico">🛒</div><div>La lista è vuota.<br>Aggiungi ingredienti da una ricetta!</div></div>`;
+  const cats=Object.entries(grouped).map(([cat,items])=>{
+    const rows=items.map((item,ii)=>`
+      <div style="display:flex;align-items:center;padding:12px 14px;border-bottom:${ii<items.length-1?"1px solid #f5f5f5":"none"};opacity:${item.checked?.5:1}">
+        <div class="check-box ${item.checked?"on":""}" onclick="S.shopping[${item.idx}].checked=!S.shopping[${item.idx}].checked;save();render()">
+          ${item.checked?'<span style="color:white;font-size:14px">✓</span>':""}
+        </div>
+        <div style="flex:1;font-size:14px;color:#333;margin-left:12px;text-decoration:${item.checked?"line-through":"none"}">${item.nome}</div>
+        <button onclick="S.shopping.splice(${item.idx},1);save();render()" style="background:none;border:none;cursor:pointer;color:#ccc;font-size:18px;padding:0 4px">×</button>
+      </div>`).join("");
+    return `<div style="margin-bottom:16px">
+      <div style="display:flex;align-items:center;gap:8px;margin-bottom:8px">
+        <div class="cat-dot" style="background:${CAT_COLORS[cat]||'#888'}"></div>
+        <div style="font-weight:700;font-size:13px;color:#666;text-transform:uppercase;letter-spacing:.5px">${cat}</div>
+      </div>
+      <div style="background:white;border-radius:12px;box-shadow:0 2px 8px rgba(0,0,0,.06);overflow:hidden">${rows}</div>
+    </div>`;
+  }).join("");
+  return `<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px">
+    <div style="font-weight:700;font-size:16px">🛒 Lista della spesa</div>${clearBtn}
+  </div>${cats}
+  <div style="text-align:center;font-size:12px;color:#bbb;margin-top:16px">
+    ${S.shopping.length} articoli · ${S.shopping.filter(i=>i.checked).length} spuntati
+  </div>`;
+}
+
+load();render();
+if("serviceWorker"in navigator)navigator.serviceWorker.register("sw.js").catch(()=>{});
+</script>
+</body>
+</html>

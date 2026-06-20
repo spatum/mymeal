@@ -33,9 +33,12 @@
     .chip{padding:6px 14px;border-radius:20px;border:none;cursor:pointer;white-space:nowrap;font-size:13px;font-family:inherit}
     .chip.on{background:#e8472a;color:white;font-weight:700}
     .chip.off{background:#eee;color:#555}
-    .recipe-card{background:white;border-radius:12px;padding:14px;margin-bottom:10px;box-shadow:0 2px 8px rgba(0,0,0,.06);cursor:pointer;border-left:4px solid #e8472a}
+    .recipe-card{background:white;border-radius:12px;margin-bottom:10px;box-shadow:0 2px 8px rgba(0,0,0,.06);cursor:pointer;border-left:4px solid #e8472a;overflow:hidden}
+    .recipe-card-img{width:100%;height:140px;object-fit:cover;display:block}
+    .recipe-card-body{padding:14px}
     .recipe-card h3{font-weight:700;font-size:15px;color:#222;margin-bottom:4px}
     .meta{display:flex;gap:12px;font-size:12px;color:#888;flex-wrap:wrap}
+    .recipe-hero{width:100%;height:200px;object-fit:cover;border-radius:12px;margin-bottom:16px;display:block}
     .step{display:flex;gap:10px;margin-bottom:10px}
     .step-num{min-width:24px;height:24px;border-radius:50%;background:#e8472a;color:white;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;flex-shrink:0}
     .note-ai{background:#fff8f0;border-radius:8px;padding:12px;margin-bottom:16px;font-size:13px;color:#666;border-left:3px solid #ff9800}
@@ -52,6 +55,11 @@
     .ing-row{padding:6px 0;border-bottom:1px solid #f0f0f0;font-size:14px;color:#444}
     label.lbl{font-size:13px;color:#888;display:block;margin-bottom:4px}
     select.sel{padding:8px 12px;border:1.5px solid #ddd;border-radius:8px;font-size:14px;width:100%;background:#fafafa;font-family:inherit}
+    .loading-overlay{position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(255,255,255,0.9);display:flex;flex-direction:column;align-items:center;justify-content:center;z-index:999}
+    .loading-spinner{width:48px;height:48px;border:4px solid #eee;border-top:4px solid #e8472a;border-radius:50%;animation:spin 0.8s linear infinite;margin-bottom:16px}
+    @keyframes spin{to{transform:rotate(360deg)}}
+    .loading-text{font-size:15px;color:#555;font-weight:600}
+    .loading-sub{font-size:13px;color:#aaa;margin-top:6px}
   </style>
 </head>
 <body>
@@ -63,6 +71,11 @@
     <button class="tab-btn" onclick="nav('spesa')">🛒 Spesa</button>
   </div>
   <div class="content" id="content"></div>
+  <div class="loading-overlay" id="loadingOverlay" style="display:none">
+    <div class="loading-spinner"></div>
+    <div class="loading-text">⏳ Estrazione ricetta in corso...</div>
+    <div class="loading-sub">Sto analizzando la pagina</div>
+  </div>
 </div>
 <script>
 const PROXY = "https://mymeal-proxy.spatum.workers.dev";
@@ -73,7 +86,8 @@ const CB_ICONS = {Colazione:"☀️",Pranzo:"🍝",Cena:"🌙",Dolci:"🍰"};
 let S = {
   tab:"ricette", recipes:[], cookbooks:[...DEFAULT_CB], shopping:[],
   selected:null, filter:"Tutti", search:"", loading:false, error:"",
-  addingToList:false, showAddCb:false, editingNote:false, noteText:""
+  addingToList:false, showAddCb:false, editingNote:false, noteText:"",
+  manualItem:""
 };
 
 function load(){
@@ -93,11 +107,15 @@ function save(){
   localStorage.setItem("mm_s",JSON.stringify(S.shopping));
 }
 
+function showLoading(show){
+  document.getElementById("loadingOverlay").style.display = show ? "flex" : "none";
+}
+
 async function callClaude(prompt){
   const res = await fetch("/.netlify/functions/claude", {
-    method: "POST",
-    headers: {"Content-Type":"application/json"},
-    body: JSON.stringify({prompt})
+    method:"POST",
+    headers:{"Content-Type":"application/json"},
+    body:JSON.stringify({prompt})
   });
   const data = await res.json();
   if(data.error) throw new Error(data.error);
@@ -115,7 +133,7 @@ async function importRecipe(){
   if(!urlInp) return;
   const url = urlInp.value.trim();
   if(!url) return;
-  S.loading=true; S.error=""; render();
+  S.loading=true; S.error=""; showLoading(true); render();
   try {
     const page = await fetchPage(url);
     const context = [
@@ -133,6 +151,7 @@ async function importRecipe(){
     const r = JSON.parse(json);
     r.id = Date.now();
     r.url = url;
+    r.image = page.image || "";
     r.ricettario = "Altro";
     r.dataAggiunta = new Date().toLocaleDateString("it-IT");
     r.notaPersonale = "";
@@ -142,9 +161,9 @@ async function importRecipe(){
     S.editingNote = false;
     urlInp.value = "";
   } catch(e) {
-    S.error = "Impossibile estrarre la ricetta: " + e.message;
+    S.error = "Impossibile estrarre la ricetta. Prova con un altro URL.";
   }
-  S.loading=false; render();
+  S.loading=false; showLoading(false); render();
 }
 
 async function addToShopping(){
@@ -158,17 +177,22 @@ async function addToShopping(){
     );
     const res = JSON.parse(json);
     S.shopping = [...S.shopping, ...res.items];
-    save();
-    S.selected = null;
-    nav("spesa");
-  } catch(e) {
-    S.error = "Errore aggiunta alla spesa.";
-  }
+    save(); S.selected=null; nav("spesa");
+  } catch(e) { S.error="Errore aggiunta alla spesa."; }
   S.addingToList=false; render();
 }
 
+function addManualItem(){
+  const inp = document.getElementById("manualInp");
+  if(!inp) return;
+  const val = inp.value.trim();
+  if(!val) return;
+  S.shopping.push({nome:val, categoria:"Altro", checked:false});
+  save(); inp.value=""; render();
+}
+
 function saveNote(){
-  S.recipes = S.recipes.map(r => r.id===S.selected.id ? {...r, notaPersonale:S.noteText} : r);
+  S.recipes = S.recipes.map(r => r.id===S.selected.id ? {...r,notaPersonale:S.noteText} : r);
   S.selected = {...S.selected, notaPersonale:S.noteText};
   save(); S.editingNote=false; render();
 }
@@ -201,13 +225,16 @@ function listHTML(){
     ? `<div class="empty"><div class="ico">🍳</div><div>${S.search?'Nessun risultato per "'+S.search+'"':"Nessuna ricetta ancora.\nIncolla un URL per iniziare!"}</div></div>`
     : filtered.map(r=>`
       <div class="recipe-card" onclick="S.selected=S.recipes.find(x=>x.id===${r.id});S.noteText=S.selected.notaPersonale||'';S.editingNote=false;render()">
-        <h3>${r.titolo}</h3>
-        <div class="meta">
-          ${r.tempoPreparazione?`<span>⏱ ${r.tempoPreparazione}</span>`:""}
-          ${r.porzioni?`<span>👥 ${r.porzioni} porz.</span>`:""}
-          <span>📚 ${r.ricettario}</span>
-          ${r.notaPersonale?`<span>📝 Nota</span>`:""}
-          <span style="margin-left:auto">📅 ${r.dataAggiunta}</span>
+        ${r.image?`<img class="recipe-card-img" src="${r.image}" alt="${r.titolo}" onerror="this.style.display='none'">`:""}
+        <div class="recipe-card-body">
+          <h3>${r.titolo}</h3>
+          <div class="meta">
+            ${r.tempoPreparazione?`<span>⏱ ${r.tempoPreparazione}</span>`:""}
+            ${r.porzioni?`<span>👥 ${r.porzioni} porz.</span>`:""}
+            <span>📚 ${r.ricettario}</span>
+            ${r.notaPersonale?`<span>📝 Nota</span>`:""}
+            <span style="margin-left:auto">📅 ${r.dataAggiunta}</span>
+          </div>
         </div>
       </div>`).join("");
   return `
@@ -253,6 +280,7 @@ function detailHTML(){
   return `
     <button class="back" onclick="S.selected=null;S.editingNote=false;render()">← Torna alle ricette</button>
     <div class="card">
+      ${r.image?`<img class="recipe-hero" src="${r.image}" alt="${r.titolo}" onerror="this.style.display='none'">`:""}
       <div style="font-weight:800;font-size:20px;color:#222;margin-bottom:8px">${r.titolo}</div>
       <div class="meta" style="margin-bottom:16px">
         ${r.tempoPreparazione?`<span>⏱ ${r.tempoPreparazione}</span>`:""}
@@ -320,8 +348,7 @@ function shoppingHTML(){
   },{});
   const clearBtn = S.shopping.some(i=>i.checked)
     ? `<button class="btn" style="padding:8px 14px;background:#f44336;color:white;font-size:13px" onclick="S.shopping=S.shopping.filter(i=>!i.checked);save();render()">🗑 Rimuovi spuntati</button>` : "";
-  if(!S.shopping.length) return `<div class="empty"><div class="ico">🛒</div><div>La lista è vuota.<br>Aggiungi ingredienti da una ricetta!</div></div>`;
-  const cats = Object.entries(grouped).map(([cat,items])=>{
+  const cats = Object.keys(grouped).length===0 ? "" : Object.entries(grouped).map(([cat,items])=>{
     const rows = items.map((item,ii)=>`
       <div style="display:flex;align-items:center;padding:12px 14px;border-bottom:${ii<items.length-1?"1px solid #f5f5f5":"none"};opacity:${item.checked?.5:1}">
         <div class="check-box ${item.checked?"on":""}" onclick="S.shopping[${item.idx}].checked=!S.shopping[${item.idx}].checked;save();render()">
@@ -341,10 +368,17 @@ function shoppingHTML(){
   return `
     <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px">
       <div style="font-weight:700;font-size:16px">🛒 Lista della spesa</div>${clearBtn}
-    </div>${cats}
-    <div style="text-align:center;font-size:12px;color:#bbb;margin-top:16px">
-      ${S.shopping.length} articoli · ${S.shopping.filter(i=>i.checked).length} spuntati
-    </div>`;
+    </div>
+    <div class="card" style="margin-bottom:16px">
+      <div style="font-weight:700;font-size:14px;margin-bottom:10px;color:#333">➕ Aggiungi articolo manualmente</div>
+      <div class="row">
+        <input id="manualInp" class="inp" placeholder="Es. Parmigiano, Olio d'oliva..."
+          onkeydown="if(event.key==='Enter')addManualItem()"/>
+        <button class="btn btn-red" onclick="addManualItem()">Aggiungi</button>
+      </div>
+    </div>
+    ${cats || `<div class="empty"><div class="ico">🛒</div><div>La lista è vuota.<br>Aggiungi ingredienti da una ricetta o manualmente!</div></div>`}
+    ${S.shopping.length?`<div style="text-align:center;font-size:12px;color:#bbb;margin-top:16px">${S.shopping.length} articoli · ${S.shopping.filter(i=>i.checked).length} spuntati</div>`:""}`;
 }
 
 load(); render();

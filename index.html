@@ -45,7 +45,7 @@
     .step-num{min-width:24px;height:24px;border-radius:50%;background:#e8472a;color:white;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;flex-shrink:0}
     .note-ai{background:#fff8f0;border-radius:8px;padding:12px;margin-bottom:16px;font-size:13px;color:#666;border-left:3px solid #ff9800}
     .note-personal{background:#f0f7ff;border-radius:8px;padding:12px;font-size:14px;color:#333;border-left:3px solid #2196f3;line-height:1.6;white-space:pre-wrap}
-    .check-box{width:22px;height:22px;border-radius:6px;cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0;border:2px solid #ddd;background:white}
+    .check-box{width:22px;height:22px;border-radius:6px;cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0;border:2px solid #ddd;background:white;transition:all .2s}
     .check-box.on{background:#4caf50;border-color:#4caf50}
     .badge{background:#e8472a;color:white;border-radius:50%;width:28px;height:28px;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:13px}
     .empty{text-align:center;color:#aaa;padding:40px 0}
@@ -53,7 +53,8 @@
     .err{color:#e8472a;font-size:13px;margin-top:8px}
     .back{background:none;border:none;color:#e8472a;cursor:pointer;font-size:14px;margin-bottom:12px;font-weight:700;font-family:inherit}
     .sec-title{font-weight:700;font-size:15px;margin-bottom:8px;color:#333}
-    .ing-row{padding:6px 0;border-bottom:1px solid #f0f0f0;font-size:14px;color:#444}
+    .ing-row{padding:6px 0;border-bottom:1px solid #f0f0f0;font-size:14px;color:#444;display:flex;align-items:center;gap:8px}
+    .cat-pill{font-size:10px;padding:2px 7px;border-radius:10px;color:white;font-weight:700;white-space:nowrap}
     label.lbl{font-size:13px;color:#888;display:block;margin-bottom:4px}
     select.sel{padding:8px 12px;border:1.5px solid #ddd;border-radius:8px;font-size:14px;width:100%;background:#fafafa;font-family:inherit}
     .loading-overlay{position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(255,255,255,0.92);display:flex;flex-direction:column;align-items:center;justify-content:center;z-index:999}
@@ -61,19 +62,26 @@
     @keyframes spin{to{transform:rotate(360deg)}}
     .loading-text{font-size:15px;color:#555;font-weight:600}
     .loading-sub{font-size:13px;color:#aaa;margin-top:6px}
-    .spesa-group{background:white;border-radius:12px;margin-bottom:16px;box-shadow:0 2px 8px rgba(0,0,0,.06);overflow:hidden}
-    .spesa-group-header{display:flex;align-items:center;justify-content:space-between;padding:12px 14px;background:#fafafa;border-bottom:1px solid #f0f0f0}
+    /* SPESA COLLASSABILE */
+    .spesa-group{background:white;border-radius:12px;margin-bottom:12px;box-shadow:0 2px 8px rgba(0,0,0,.06);overflow:hidden}
+    .spesa-group-header{display:flex;align-items:center;justify-content:space-between;padding:13px 14px;cursor:pointer;user-select:none;transition:background .15s}
+    .spesa-group-header:hover{background:#fafafa}
+    .spesa-group-left{display:flex;align-items:center;gap:10px;flex:1}
+    .spesa-group-arrow{font-size:12px;color:#aaa;transition:transform .2s}
+    .spesa-group-arrow.open{transform:rotate(90deg)}
     .spesa-group-title{font-weight:700;font-size:14px;color:#333}
     .spesa-group-sub{font-size:12px;color:#aaa;margin-top:2px}
-    .btn-remove-group{background:none;border:1px solid #e8472a;cursor:pointer;color:#e8472a;font-size:12px;font-weight:600;font-family:inherit;padding:4px 8px;border-radius:6px}
-    .share-row{display:flex;gap:8px;margin-bottom:12px;flex-wrap:wrap}
+    .spesa-group-body{display:none}
+    .spesa-group-body.open{display:block}
+    .cat-section-title{display:flex;align-items:center;gap:7px;padding:8px 14px 4px;font-size:11px;font-weight:700;color:#888;text-transform:uppercase;letter-spacing:.5px}
+    .cat-dot{width:9px;height:9px;border-radius:50%;flex-shrink:0}
+    .share-row{display:flex;gap:8px;margin-bottom:12px}
     .backup-row{display:flex;gap:8px;margin-top:10px}
     .text-mode-box{background:#f9f9f9;border-radius:8px;padding:12px;margin-top:10px;border:1.5px dashed #ddd}
-
-    /* STILE STAMPA */
-    @media print {
+    .btn-remove-group{background:none;border:1px solid #e8472a;cursor:pointer;color:#e8472a;font-size:11px;font-weight:600;font-family:inherit;padding:3px 8px;border-radius:6px;white-space:nowrap}
+    @media print{
       body{background:white}
-      #app .header,.tabs,.back,.share-row,.row.action-row,.note-personal,.spesa-group,.loading-overlay{display:none!important}
+      #app .header,.tabs,.back,.share-row,.action-row,.loading-overlay{display:none!important}
       .card{box-shadow:none;border:none;padding:0}
       .recipe-hero{height:150px}
       .content{padding:0}
@@ -92,47 +100,49 @@
   <div class="content" id="content"></div>
   <div class="loading-overlay" id="loadingOverlay" style="display:none">
     <div class="loading-spinner"></div>
-    <div class="loading-text">⏳ Estrazione ricetta in corso...</div>
-    <div class="loading-sub">Sto analizzando la pagina</div>
+    <div class="loading-text">⏳ Elaborazione in corso...</div>
+    <div class="loading-sub" id="loadingSub">Sto analizzando la pagina</div>
   </div>
 </div>
 <input type="file" id="importFile" accept=".json" style="display:none" onchange="importBackup(event)"/>
 <script>
-const PROXY = "https://mymeal-proxy.spatum.workers.dev";
-const DEFAULT_CB = ["Colazione","Pranzo","Cena","Dolci","Altro"];
-const CB_ICONS = {Colazione:"☀️",Pranzo:"🍝",Cena:"🌙",Dolci:"🍰"};
+const PROXY="https://mymeal-proxy.spatum.workers.dev";
+const DEFAULT_CB=["Colazione","Pranzo","Cena","Dolci","Altro"];
+const CB_ICONS={Colazione:"☀️",Pranzo:"🍝",Cena:"🌙",Dolci:"🍰"};
+const CAT_COLORS={"Frutta e Verdura":"#4caf50","Carne e Pesce":"#f44336","Latticini":"#2196f3","Pane e Cereali":"#ff9800","Condimenti":"#9c27b0","Surgelati":"#00bcd4","Bevande":"#03a9f4","Altro":"#607d8b"};
+const CAT_LIST=Object.keys(CAT_COLORS);
 
-let S = {
-  tab:"ricette", recipes:[], cookbooks:[...DEFAULT_CB], shopping:[],
-  selected:null, filter:"Tutti", search:"", loading:false, error:"",
-  addingToList:false, showAddCb:false, editingNote:false, noteText:"",
-  showTextMode:false, textInput:""
+let S={
+  tab:"ricette",recipes:[],cookbooks:[...DEFAULT_CB],shopping:[],
+  selected:null,filter:"Tutti",search:"",loading:false,error:"",
+  addingToList:false,showAddCb:false,editingNote:false,noteText:"",
+  showTextMode:false,openGroups:{}
 };
 
 function load(){
-  try {
-    const r=localStorage.getItem("mm_r");
-    const c=localStorage.getItem("mm_c");
-    const s=localStorage.getItem("mm_s");
+  try{
+    const r=localStorage.getItem("mm_r"),c=localStorage.getItem("mm_c"),s=localStorage.getItem("mm_s"),og=localStorage.getItem("mm_og");
     if(r) S.recipes=JSON.parse(r);
     if(c) S.cookbooks=JSON.parse(c);
     if(s) S.shopping=JSON.parse(s);
+    if(og) S.openGroups=JSON.parse(og);
+    // migrazione vecchio formato flat
     if(S.shopping.length&&S.shopping[0].nome!==undefined){
-      S.shopping=[{groupId:"manuale",titolo:"Articoli manuali",items:S.shopping}];
+      S.shopping=[{groupId:"manuale",titolo:"Articoli manuali",items:S.shopping.map(i=>({...i,categoria:"Altro"}))}];
     }
-  } catch(e){}
+  }catch(e){}
 }
 
 function save(){
   localStorage.setItem("mm_r",JSON.stringify(S.recipes));
   localStorage.setItem("mm_c",JSON.stringify(S.cookbooks));
   localStorage.setItem("mm_s",JSON.stringify(S.shopping));
+  localStorage.setItem("mm_og",JSON.stringify(S.openGroups));
 }
 
 function showLoading(show,msg){
-  const ov=document.getElementById("loadingOverlay");
-  ov.style.display=show?"flex":"none";
-  if(msg) ov.querySelector(".loading-sub").textContent=msg;
+  document.getElementById("loadingOverlay").style.display=show?"flex":"none";
+  if(msg) document.getElementById("loadingSub").textContent=msg;
 }
 
 async function callClaude(prompt){
@@ -150,13 +160,19 @@ async function fetchPage(url){
   return await res.json();
 }
 
-function isYouTube(url){
-  return url.includes("youtube.com")||url.includes("youtu.be");
-}
-
-function extractYouTubeId(url){
-  const m=url.match(/(?:v=|youtu\.be\/)([a-zA-Z0-9_-]{11})/);
-  return m?m[1]:null;
+// Categorizza ingredienti con AI
+async function categorizzaIngredienti(ingredienti){
+  try{
+    const json=await callClaude(
+      "Categorizza questi ingredienti nelle seguenti categorie: "+CAT_LIST.join(", ")+
+      ".\nIngredienti: "+ingredienti.join(", ")+
+      "\nRispondi SOLO con JSON valido senza backtick:\n"+
+      '{"items":[{"nome":"...","categoria":"..."}]}'
+    );
+    return JSON.parse(json).items.map(i=>({...i,checked:false}));
+  }catch(e){
+    return ingredienti.map(nome=>({nome,categoria:"Altro",checked:false}));
+  }
 }
 
 async function importRecipe(){
@@ -166,51 +182,34 @@ async function importRecipe(){
   if(!url) return;
   S.loading=true; S.error=""; S.showTextMode=false;
   showLoading(true,"Sto analizzando la pagina..."); render();
-  try {
-    let context="";
-    if(isYouTube(url)){
-      showLoading(true,"Recupero dati YouTube...");
-      const vid=extractYouTubeId(url);
-      // Usa oEmbed di YouTube per titolo + pagina per descrizione
-      const page=await fetchPage(url);
-      context=[
-        page.title?"Titolo video: "+page.title:"",
-        page.description?"Descrizione: "+page.description:"",
-        page.rawSnippet?"Testo pagina: "+page.rawSnippet.substring(0,2000):"",
-        "URL: "+url
-      ].filter(Boolean).join("\n");
-    } else {
-      const page=await fetchPage(url);
-      // Controlla se la pagina ha restituito qualcosa di utile
-      if(!page.title&&!page.description&&!page.rawSnippet){
-        // Attiva modalità testo libero
-        S.loading=false; showLoading(false);
-        S.showTextMode=true; S.error="";
-        render(); return;
-      }
-      context=[
-        page.title?"Titolo: "+page.title:"",
-        page.description?"Descrizione: "+page.description:"",
-        page.rawSnippet?"Testo: "+page.rawSnippet:"",
-        "URL: "+url
-      ].filter(Boolean).join("\n");
+  try{
+    const page=await fetchPage(url);
+    if(!page.title&&!page.description&&!page.rawSnippet){
+      S.loading=false; showLoading(false);
+      S.showTextMode=true; S.error="Non riesco a leggere questa pagina. Incolla il testo qui sotto.";
+      render(); return;
     }
+    const context=[
+      page.title?"Titolo: "+page.title:"",
+      page.description?"Descrizione: "+page.description:"",
+      page.rawSnippet?"Testo: "+page.rawSnippet:"",
+      "URL: "+url
+    ].filter(Boolean).join("\n");
     showLoading(true,"L'AI sta estraendo la ricetta...");
     const json=await callClaude(
       "Analizza questo contenuto e ricava la ricetta.\n"+context+
       "\nRispondi SOLO con JSON valido senza backtick:\n"+
       '{"titolo":"...","ingredienti":["..."],"istruzioni":["..."],"tempoPreparazione":"...","porzioni":"...","note":""}'
     );
-    const page2=await fetchPage(url).catch(()=>({}));
     const r=JSON.parse(json);
-    r.id=Date.now(); r.url=url; r.image=page2.image||"";
+    r.id=Date.now(); r.url=url; r.image=page.image||"";
     r.ricettario="Altro"; r.dataAggiunta=new Date().toLocaleDateString("it-IT");
     r.notaPersonale="";
     S.recipes.unshift(r); save();
     S.selected=r; S.editingNote=false;
     urlInp.value="";
-  } catch(e){
-    S.error="Impossibile estrarre la ricetta. Prova ad incollare il testo qui sotto.";
+  }catch(e){
+    S.error="Impossibile estrarre la ricetta. Prova ad incollare il testo.";
     S.showTextMode=true;
   }
   S.loading=false; showLoading(false); render();
@@ -220,7 +219,7 @@ async function importFromText(){
   const txt=document.getElementById("textInp")?.value.trim();
   if(!txt) return;
   S.loading=true; showLoading(true,"L'AI sta elaborando il testo..."); render();
-  try {
+  try{
     const json=await callClaude(
       "Estrai la ricetta da questo testo.\n"+txt+
       "\nRispondi SOLO con JSON valido senza backtick:\n"+
@@ -231,23 +230,25 @@ async function importFromText(){
     r.ricettario="Altro"; r.dataAggiunta=new Date().toLocaleDateString("it-IT");
     r.notaPersonale="";
     S.recipes.unshift(r); save();
-    S.selected=r; S.editingNote=false;
-    S.showTextMode=false;
-  } catch(e){ S.error="Impossibile elaborare il testo. Riprova."; }
+    S.selected=r; S.editingNote=false; S.showTextMode=false;
+  }catch(e){ S.error="Impossibile elaborare il testo. Riprova."; }
   S.loading=false; showLoading(false); render();
 }
 
 async function addToShopping(){
+  const r=S.selected;
+  const existing=S.shopping.find(g=>g.groupId===String(r.id));
+  if(existing){ alert("Questa ricetta è già nella lista della spesa!"); return; }
   S.addingToList=true; render();
-  try {
-    const r=S.selected;
-    const existing=S.shopping.find(g=>g.groupId===String(r.id));
-    if(existing){ alert("Questa ricetta è già nella lista della spesa!"); S.addingToList=false; render(); return; }
-    const group={groupId:String(r.id),titolo:r.titolo,items:r.ingredienti.map(nome=>({nome,checked:false}))};
+  showLoading(true,"Classifico gli ingredienti per categoria...");
+  try{
+    const items=await categorizzaIngredienti(r.ingredienti);
+    const group={groupId:String(r.id),titolo:r.titolo,items};
     S.shopping.push(group);
+    S.openGroups[String(r.id)]=true;
     save(); S.selected=null; nav("spesa");
-  } catch(e){ S.error="Errore aggiunta alla spesa."; }
-  S.addingToList=false; render();
+  }catch(e){ S.error="Errore aggiunta alla spesa."; }
+  S.addingToList=false; showLoading(false); render();
 }
 
 function addManualItem(){
@@ -256,8 +257,8 @@ function addManualItem(){
   const val=inp.value.trim();
   if(!val) return;
   let m=S.shopping.find(g=>g.groupId==="manuale");
-  if(!m){ m={groupId:"manuale",titolo:"Articoli manuali",items:[]}; S.shopping.push(m); }
-  m.items.push({nome:val,checked:false});
+  if(!m){ m={groupId:"manuale",titolo:"Articoli manuali",items:[]}; S.shopping.push(m); S.openGroups["manuale"]=true; }
+  m.items.push({nome:val,categoria:"Altro",checked:false});
   save(); inp.value=""; render();
 }
 
@@ -269,13 +270,19 @@ function toggleItem(gid,idx){
 
 function removeItem(gid,idx){
   const g=S.shopping.find(x=>x.groupId===gid);
-  if(g){ g.items.splice(idx,1); if(!g.items.length) S.shopping=S.shopping.filter(x=>x.groupId!==gid); }
+  if(g){ g.items.splice(idx,1); if(!g.items.length){S.shopping=S.shopping.filter(x=>x.groupId!==gid);delete S.openGroups[gid];} }
   save(); render();
 }
 
 function removeGroup(gid){
   if(!confirm("Rimuovere questo gruppo dalla lista?")) return;
   S.shopping=S.shopping.filter(g=>g.groupId!==gid);
+  delete S.openGroups[gid];
+  save(); render();
+}
+
+function toggleGroup(gid){
+  S.openGroups[gid]=!S.openGroups[gid];
   save(); render();
 }
 
@@ -290,38 +297,27 @@ function saveNote(){
   save(); S.editingNote=false; render();
 }
 
-// ── CONDIVISIONE ─────────────────────────────────────────────
 function recipeToText(r){
-  let txt="🍴 "+r.titolo+"\n";
-  if(r.tempoPreparazione) txt+="⏱ "+r.tempoPreparazione;
-  if(r.porzioni) txt+=" · 👥 "+r.porzioni+" porzioni";
-  txt+="\n\n🧂 INGREDIENTI\n";
-  (r.ingredienti||[]).forEach(i=>{ txt+="• "+i+"\n"; });
-  txt+="\n📋 PREPARAZIONE\n";
-  (r.istruzioni||[]).forEach((s,i)=>{ txt+=(i+1)+". "+s+"\n"; });
-  if(r.note) txt+="\n📝 "+r.note;
-  if(r.url) txt+="\n\n🔗 "+r.url;
-  txt+="\n\n— Inviato con MyMeal 🍴";
-  return txt;
+  let t="🍴 "+r.titolo+"\n";
+  if(r.tempoPreparazione) t+="⏱ "+r.tempoPreparazione;
+  if(r.porzioni) t+=" · 👥 "+r.porzioni+" porzioni";
+  t+="\n\n🧂 INGREDIENTI\n";
+  (r.ingredienti||[]).forEach(i=>{ t+="• "+i+"\n"; });
+  t+="\n📋 PREPARAZIONE\n";
+  (r.istruzioni||[]).forEach((s,i)=>{ t+=(i+1)+". "+s+"\n"; });
+  if(r.note) t+="\n📝 "+r.note;
+  if(r.url) t+="\n\n🔗 "+r.url;
+  t+="\n\n— Inviato con MyMeal 🍴";
+  return t;
 }
 
-function shareWhatsApp(){
-  const txt=encodeURIComponent(recipeToText(S.selected));
-  window.open("https://wa.me/?text="+txt,"_blank");
-}
-
+function shareWhatsApp(){ window.open("https://wa.me/?text="+encodeURIComponent(recipeToText(S.selected)),"_blank"); }
 function shareEmail(){
   const r=S.selected;
-  const sub=encodeURIComponent("Ricetta: "+r.titolo);
-  const body=encodeURIComponent(recipeToText(r));
-  window.open("mailto:?subject="+sub+"&body="+body);
+  window.open("mailto:?subject="+encodeURIComponent("Ricetta: "+r.titolo)+"&body="+encodeURIComponent(recipeToText(r)));
 }
+function printRecipe(){ window.print(); }
 
-function printRecipe(){
-  window.print();
-}
-
-// ── BACKUP ───────────────────────────────────────────────────
 function exportBackup(){
   const data={recipes:S.recipes,cookbooks:S.cookbooks,shopping:S.shopping,exportedAt:new Date().toISOString()};
   const blob=new Blob([JSON.stringify(data,null,2)],{type:"application/json"});
@@ -336,13 +332,13 @@ function importBackup(e){
   if(!file) return;
   const reader=new FileReader();
   reader.onload=function(ev){
-    try {
+    try{
       const data=JSON.parse(ev.target.result);
-      if(!data.recipes) throw new Error("File non valido");
-      if(!confirm("Vuoi ripristinare il backup? Le ricette attuali verranno sostituite.")) return;
+      if(!data.recipes) throw new Error();
+      if(!confirm("Ripristinare il backup? Le ricette attuali verranno sostituite.")) return;
       S.recipes=data.recipes||[]; S.cookbooks=data.cookbooks||[...DEFAULT_CB]; S.shopping=data.shopping||[];
-      save(); render(); alert("✅ Backup ripristinato con successo!");
-    } catch(err){ alert("❌ File non valido."); }
+      save(); render(); alert("✅ Backup ripristinato!");
+    }catch(err){ alert("❌ File non valido."); }
   };
   reader.readAsText(file); e.target.value="";
 }
@@ -371,16 +367,14 @@ function listHTML(){
   const chips=["Tutti",...S.cookbooks].map(c=>
     `<button class="chip ${S.filter===c?'on':'off'}" onclick="S.filter='${c}';render()">${c}</button>`
   ).join("");
-  const textModeBox=S.showTextMode?`
+  const textBox=S.showTextMode?`
     <div class="text-mode-box">
-      <div style="font-size:13px;font-weight:700;color:#555;margin-bottom:8px">
-        📋 Incolla qui il testo della ricetta (caption, descrizione video...)
-      </div>
+      <div style="font-size:13px;font-weight:700;color:#555;margin-bottom:8px">📋 Incolla qui il testo della ricetta</div>
       <textarea id="textInp" rows="6" style="width:100%;padding:10px;border:1.5px solid #ddd;border-radius:8px;font-size:13px;outline:none;resize:vertical;font-family:inherit"
-        placeholder="Es: Ingredienti: 200g pasta, 2 uova... Procedimento: 1. Cuoci la pasta..."></textarea>
+        placeholder="Incolla la descrizione del video, la caption di Instagram, o il testo della ricetta..."></textarea>
       <div class="row" style="margin-top:8px">
-        <button class="btn btn-red" style="flex:1;padding:10px 0" onclick="importFromText()">🤖 Estrai ricetta dal testo</button>
-        <button class="btn" style="background:#eee;color:#666;padding:10px 16px" onclick="S.showTextMode=false;render()">✕</button>
+        <button class="btn btn-red" style="flex:1;padding:10px 0" onclick="importFromText()">🤖 Estrai ricetta</button>
+        <button class="btn" style="background:#eee;color:#666;padding:10px 16px" onclick="S.showTextMode=false;S.error='';render()">✕</button>
       </div>
     </div>`:"";
   const list=filtered.length===0
@@ -410,7 +404,7 @@ function listHTML(){
         </button>
       </div>
       ${S.error?`<div class="err">${S.error}</div>`:""}
-      ${textModeBox}
+      ${textBox}
       <div style="font-size:12px;color:#bbb;margin-top:10px;text-align:center">
         oppure <button style="background:none;border:none;color:#e8472a;cursor:pointer;font-size:12px;font-weight:600" onclick="S.showTextMode=!S.showTextMode;render()">incolla il testo della ricetta</button>
       </div>
@@ -442,7 +436,7 @@ function detailHTML(){
        </div>`
     :r.notaPersonale
       ?`<div class="note-personal">${r.notaPersonale}</div>`
-      :`<div style="font-size:13px;color:#bbb;font-style:italic">Nessuna nota. Premi "+ Aggiungi" per annotare varianti o consigli.</div>`;
+      :`<div style="font-size:13px;color:#bbb;font-style:italic">Nessuna nota. Premi "+ Aggiungi".</div>`;
   const inSpesa=S.shopping.find(g=>g.groupId===String(r.id));
   return `
     <button class="back" onclick="S.selected=null;S.editingNote=false;render()">← Torna alle ricette</button>
@@ -453,14 +447,11 @@ function detailHTML(){
         ${r.tempoPreparazione?`<span>⏱ ${r.tempoPreparazione}</span>`:""}
         ${r.porzioni?`<span>👥 ${r.porzioni} porzioni</span>`:""}
       </div>
-
-      <!-- PULSANTI CONDIVISIONE E STAMPA -->
       <div class="share-row">
         <button class="btn btn-wa" style="flex:1;padding:9px 0;font-size:13px" onclick="shareWhatsApp()">💬 WhatsApp</button>
         <button class="btn btn-blue" style="flex:1;padding:9px 0;font-size:13px" onclick="shareEmail()">✉️ Email</button>
         <button class="btn" style="flex:1;padding:9px 0;font-size:13px;background:#f5f5f5;color:#555;border:1.5px solid #ddd" onclick="printRecipe()">🖨️ Stampa</button>
       </div>
-
       <div style="margin-bottom:16px">
         <label class="lbl">📚 Ricettario</label>
         <select class="sel" onchange="S.recipes=S.recipes.map(x=>x.id===${r.id}?{...x,ricettario:this.value}:x);S.selected={...S.selected,ricettario:this.value};save();render()">${opts}</select>
@@ -472,8 +463,7 @@ function detailHTML(){
         <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px">
           <div class="sec-title" style="margin:0">✏️ Note personali</div>
           ${!S.editingNote?`<button class="btn-sm" onclick="S.noteText='${(r.notaPersonale||"").replace(/'/g,"\\'")}';S.editingNote=true;render()">${r.notaPersonale?"Modifica":"+ Aggiungi"}</button>`:""}
-        </div>
-        ${noteSection}
+        </div>${noteSection}
       </div>
       ${r.url?`<div style="font-size:12px;color:#aaa;margin-bottom:16px;word-break:break-all">🔗 ${r.url}</div>`:""}
       <div class="row action-row">
@@ -495,10 +485,8 @@ function cbHTML(){
     const del=!DEFAULT_CB.includes(name)
       ?`<button onclick="event.stopPropagation();S.cookbooks=S.cookbooks.filter(c=>c!=='${name}');save();render()" style="background:none;border:none;cursor:pointer;color:#ccc;font-size:18px">×</button>`:"";
     return `<div class="card" style="cursor:pointer;display:flex;align-items:center;justify-content:space-between" onclick="S.filter='${name}';nav('ricette')">
-      <div>
-        <div style="font-weight:700;font-size:15px;color:#222">${CB_ICONS[name]||"📁"} ${name}</div>
-        <div style="font-size:13px;color:#888;margin-top:2px">${count} ricett${count===1?"a":"e"}</div>
-      </div>
+      <div><div style="font-weight:700;font-size:15px;color:#222">${CB_ICONS[name]||"📁"} ${name}</div>
+      <div style="font-size:13px;color:#888;margin-top:2px">${count} ricett${count===1?"a":"e"}</div></div>
       <div style="display:flex;align-items:center;gap:8px"><div class="badge">${count}</div>${del}</div>
     </div>`;
   }).join("");
@@ -510,11 +498,11 @@ function cbHTML(){
     </div>
     ${form}${list}
     <div class="card" style="margin-top:8px">
-      <div style="font-weight:700;font-size:15px;margin-bottom:8px;color:#333">💾 Backup ricette</div>
-      <div style="font-size:13px;color:#666;margin-bottom:12px">${S.recipes.length} ricette · ${tot} articoli in lista spesa</div>
+      <div style="font-weight:700;font-size:15px;margin-bottom:6px;color:#333">💾 Backup e Ripristino</div>
+      <div style="font-size:13px;color:#888;margin-bottom:12px">${S.recipes.length} ricette salvate · ${tot} articoli in spesa</div>
       <div class="backup-row">
-        <button class="btn btn-blue" style="flex:1;padding:10px 0;font-size:13px" onclick="exportBackup()">📤 Esporta</button>
-        <button class="btn" style="flex:1;padding:10px 0;font-size:13px;background:#f0f7ff;color:#2196f3;border:1.5px solid #2196f3" onclick="document.getElementById('importFile').click()">📥 Importa</button>
+        <button class="btn btn-blue" style="flex:1;padding:11px 0;font-size:13px" onclick="exportBackup()">📤 Esporta backup</button>
+        <button class="btn" style="flex:1;padding:11px 0;font-size:13px;background:#f0f7ff;color:#2196f3;border:1.5px solid #2196f3" onclick="document.getElementById('importFile').click()">📥 Ripristina backup</button>
       </div>
     </div>`;
 }
@@ -528,24 +516,41 @@ function addCb(){
 function shoppingHTML(){
   const hasChecked=S.shopping.some(g=>g.items.some(i=>i.checked));
   const groups=S.shopping.map(g=>{
-    const rows=g.items.map((item,idx)=>`
-      <div style="display:flex;align-items:center;padding:11px 14px;border-bottom:1px solid #f5f5f5;opacity:${item.checked?.5:1}">
-        <div class="check-box ${item.checked?"on":""}" onclick="toggleItem('${g.groupId}',${idx})">
-          ${item.checked?'<span style="color:white;font-size:13px">✓</span>':""}
-        </div>
-        <div style="flex:1;font-size:14px;color:#333;margin-left:12px;text-decoration:${item.checked?"line-through":"none"}">${item.nome}</div>
-        <button onclick="removeItem('${g.groupId}',${idx})" style="background:none;border:none;cursor:pointer;color:#ccc;font-size:18px;padding:0 4px">×</button>
-      </div>`).join("");
+    const isOpen=!!S.openGroups[g.groupId];
     const done=g.items.filter(i=>i.checked).length;
+    const total=g.items.length;
+    // raggruppa per categoria
+    const byCat=g.items.reduce((acc,item,idx)=>{
+      const cat=item.categoria||"Altro";
+      if(!acc[cat]) acc[cat]=[];
+      acc[cat].push({...item,idx});
+      return acc;
+    },{});
+    const catSections=Object.entries(byCat).map(([cat,items])=>{
+      const col=CAT_COLORS[cat]||"#607d8b";
+      const rows=items.map(item=>`
+        <div style="display:flex;align-items:center;padding:10px 14px;border-bottom:1px solid #f5f5f5;opacity:${item.checked?.5:1}">
+          <div class="check-box ${item.checked?"on":""}" onclick="toggleItem('${g.groupId}',${item.idx})">
+            ${item.checked?'<span style="color:white;font-size:13px">✓</span>':""}
+          </div>
+          <div style="flex:1;font-size:14px;color:#333;margin-left:10px;text-decoration:${item.checked?"line-through":"none"}">${item.nome}</div>
+          <span class="cat-pill" style="background:${col}">${cat.split(" ")[0]}</span>
+          <button onclick="removeItem('${g.groupId}',${item.idx})" style="background:none;border:none;cursor:pointer;color:#ddd;font-size:16px;padding:0 0 0 8px">×</button>
+        </div>`).join("");
+      return `<div class="cat-section-title"><div class="cat-dot" style="background:${col}"></div>${cat}</div>${rows}`;
+    }).join("");
     return `<div class="spesa-group">
-      <div class="spesa-group-header">
-        <div>
-          <div class="spesa-group-title">${g.groupId==="manuale"?"📝":"🍽"} ${g.titolo}</div>
-          <div class="spesa-group-sub">${done}/${g.items.length} articoli</div>
+      <div class="spesa-group-header" onclick="toggleGroup('${g.groupId}')">
+        <div class="spesa-group-left">
+          <span class="spesa-group-arrow ${isOpen?'open':''}">▶</span>
+          <div>
+            <div class="spesa-group-title">${g.groupId==="manuale"?"📝":"🍽"} ${g.titolo}</div>
+            <div class="spesa-group-sub">${done}/${total} spuntati</div>
+          </div>
         </div>
-        <button class="btn-remove-group" onclick="removeGroup('${g.groupId}')">Rimuovi</button>
+        <button class="btn-remove-group" onclick="event.stopPropagation();removeGroup('${g.groupId}')">Rimuovi</button>
       </div>
-      ${rows}
+      <div class="spesa-group-body ${isOpen?'open':''}">${catSections}</div>
     </div>`;
   }).join("");
   return `

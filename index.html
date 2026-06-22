@@ -175,13 +175,14 @@ function showLoading(show,msg){
 }
 
 async function callClaude(prompt){
-  const res=await fetch("/functions/claude",{
+  const res=await fetch("https://mymeal-api.spatum.workers.dev",{
     method:"POST",headers:{"Content-Type":"application/json"},
     body:JSON.stringify({prompt})
   });
   const data=await res.json();
   if(data.error) throw new Error(data.error);
-  return data.content.map(b=>b.text||"").join("\n").replace(/```json|```/g,"").trim();
+  return data.content.map(b=>b.text||"").join("\n").replace(/```json|
+```/g,"").trim();
 }
 
 async function fetchPage(url){

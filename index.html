@@ -155,7 +155,6 @@ function load(){
     if(c) S.cookbooks=JSON.parse(c);
     if(s) S.shopping=JSON.parse(s);
     if(og) S.openGroups=JSON.parse(og);
-    // migrazione vecchio formato flat
     if(S.shopping.length&&S.shopping[0].nome!==undefined){
       S.shopping=[{groupId:"manuale",titolo:"Articoli manuali",items:S.shopping}];
     }
@@ -174,6 +173,7 @@ function showLoading(show,msg){
   if(msg) document.getElementById("loadingSub").textContent=msg;
 }
 
+// ---- FUNZIONE CORRETTA SENZA ERRORI DI SINTASSI ----
 async function callClaude(prompt){
   const res=await fetch("https://mymeal-api.spatum.workers.dev",{
     method:"POST",headers:{"Content-Type":"application/json"},
@@ -181,8 +181,7 @@ async function callClaude(prompt){
   });
   const data=await res.json();
   if(data.error) throw new Error(data.error);
-  return data.content.map(b=>b.text||"").join("\n").replace(/```json|
-```/g,"").trim();
+  return data.content.map(b=>b.text||"").join("\n").replace(/`{3}json|`{3}/g,"").trim();
 }
 
 async function fetchPage(url){

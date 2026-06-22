@@ -45,7 +45,7 @@
     .step-num{min-width:24px;height:24px;border-radius:50%;background:#e8472a;color:white;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;flex-shrink:0}
     .note-ai{background:#fff8f0;border-radius:8px;padding:12px;margin-bottom:16px;font-size:13px;color:#666;border-left:3px solid #ff9800}
     .note-personal{background:#f0f7ff;border-radius:8px;padding:12px;font-size:14px;color:#333;border-left:3px solid #2196f3;line-height:1.6;white-space:pre-wrap}
-    .check-box{width:22px;height:22px;border-radius:6px;cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0;border:2px solid #ddd;background:white;transition:all .2s}
+    .check-box{width:22px;height:22px;border-radius:6px;cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0;border:2px solid #ddd;background:white}
     .check-box.on{background:#4caf50;border-color:#4caf50}
     .badge{background:#e8472a;color:white;border-radius:50%;width:28px;height:28px;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:13px}
     .empty{text-align:center;color:#aaa;padding:40px 0}
@@ -53,8 +53,7 @@
     .err{color:#e8472a;font-size:13px;margin-top:8px}
     .back{background:none;border:none;color:#e8472a;cursor:pointer;font-size:14px;margin-bottom:12px;font-weight:700;font-family:inherit}
     .sec-title{font-weight:700;font-size:15px;margin-bottom:8px;color:#333}
-    .ing-row{padding:6px 0;border-bottom:1px solid #f0f0f0;font-size:14px;color:#444;display:flex;align-items:center;gap:8px}
-    .cat-pill{font-size:10px;padding:2px 7px;border-radius:10px;color:white;font-weight:700;white-space:nowrap}
+    .ing-row{padding:6px 0;border-bottom:1px solid #f0f0f0;font-size:14px;color:#444}
     label.lbl{font-size:13px;color:#888;display:block;margin-bottom:4px}
     select.sel{padding:8px 12px;border:1.5px solid #ddd;border-radius:8px;font-size:14px;width:100%;background:#fafafa;font-family:inherit}
     .loading-overlay{position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(255,255,255,0.92);display:flex;flex-direction:column;align-items:center;justify-content:center;z-index:999}
@@ -65,23 +64,28 @@
     /* SPESA COLLASSABILE */
     .spesa-group{background:white;border-radius:12px;margin-bottom:12px;box-shadow:0 2px 8px rgba(0,0,0,.06);overflow:hidden}
     .spesa-group-header{display:flex;align-items:center;justify-content:space-between;padding:13px 14px;cursor:pointer;user-select:none;transition:background .15s}
-    .spesa-group-header:hover{background:#fafafa}
+    .spesa-group-header:active{background:#fafafa}
     .spesa-group-left{display:flex;align-items:center;gap:10px;flex:1}
-    .spesa-group-arrow{font-size:12px;color:#aaa;transition:transform .2s}
-    .spesa-group-arrow.open{transform:rotate(90deg)}
+    .spesa-group-color{width:12px;height:12px;border-radius:50%;flex-shrink:0}
+    .spesa-group-info{flex:1}
     .spesa-group-title{font-weight:700;font-size:14px;color:#333}
-    .spesa-group-sub{font-size:12px;color:#aaa;margin-top:2px}
-    .spesa-group-body{display:none}
-    .spesa-group-body.open{display:block}
-    .cat-section-title{display:flex;align-items:center;gap:7px;padding:8px 14px 4px;font-size:11px;font-weight:700;color:#888;text-transform:uppercase;letter-spacing:.5px}
-    .cat-dot{width:9px;height:9px;border-radius:50%;flex-shrink:0}
+    .spesa-group-sub{font-size:12px;color:#aaa;margin-top:1px}
+    .spesa-group-arrow{font-size:12px;color:#aaa;transition:transform .2s;margin-right:6px}
+    .spesa-group-arrow.open{transform:rotate(90deg)}
+    .btn-remove-group{background:none;border:1px solid #e8472a;cursor:pointer;color:#e8472a;font-size:11px;font-weight:600;font-family:inherit;padding:3px 7px;border-radius:5px;white-space:nowrap}
+    /* CATEGORIE COLORI */
+    .cat-section{padding:6px 14px 0}
+    .cat-label{display:flex;align-items:center;gap:6px;padding:8px 0 4px;font-size:11px;font-weight:700;color:#888;text-transform:uppercase;letter-spacing:.5px;border-bottom:1px solid #f0f0f0}
+    .cat-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0}
+    .spesa-item{display:flex;align-items:center;padding:10px 0;border-bottom:1px solid #f8f8f8}
     .share-row{display:flex;gap:8px;margin-bottom:12px}
     .backup-row{display:flex;gap:8px;margin-top:10px}
     .text-mode-box{background:#f9f9f9;border-radius:8px;padding:12px;margin-top:10px;border:1.5px dashed #ddd}
-    .btn-remove-group{background:none;border:1px solid #e8472a;cursor:pointer;color:#e8472a;font-size:11px;font-weight:600;font-family:inherit;padding:3px 8px;border-radius:6px;white-space:nowrap}
+    .progress-bar{height:4px;background:#eee;border-radius:2px;margin-top:6px;overflow:hidden}
+    .progress-fill{height:100%;background:#4caf50;border-radius:2px;transition:width .3s}
     @media print{
       body{background:white}
-      #app .header,.tabs,.back,.share-row,.action-row,.loading-overlay{display:none!important}
+      #app .header,.tabs,.back,.share-row,.row.action-row,.spesa-group,.loading-overlay{display:none!important}
       .card{box-shadow:none;border:none;padding:0}
       .recipe-hero{height:150px}
       .content{padding:0}
@@ -109,27 +113,35 @@
 const PROXY="https://mymeal-proxy.spatum.workers.dev";
 const DEFAULT_CB=["Colazione","Pranzo","Cena","Dolci","Altro"];
 const CB_ICONS={Colazione:"☀️",Pranzo:"🍝",Cena:"🌙",Dolci:"🍰"};
-const CAT_COLORS={"Frutta e Verdura":"#4caf50","Carne e Pesce":"#f44336","Latticini":"#2196f3","Pane e Cereali":"#ff9800","Condimenti":"#9c27b0","Surgelati":"#00bcd4","Bevande":"#03a9f4","Altro":"#607d8b"};
-const CAT_LIST=Object.keys(CAT_COLORS);
+const CAT_COLORS={"Frutta e Verdura":"#4caf50","Carne e Pesce":"#f44336","Latticini":"#2196f3","Pane e Cereali":"#ff9800","Condimenti":"#9c27b0","Surgelati":"#00bcd4","Altro":"#607d8b"};
+const CAT_ORDER=["Frutta e Verdura","Carne e Pesce","Latticini","Pane e Cereali","Condimenti","Surgelati","Altro"];
 
+// collapsed: set di groupId collassati
 let S={
   tab:"ricette",recipes:[],cookbooks:[...DEFAULT_CB],shopping:[],
+  collapsed:new Set(),
   selected:null,filter:"Tutti",search:"",loading:false,error:"",
   addingToList:false,showAddCb:false,editingNote:false,noteText:"",
-  showTextMode:false,openGroups:{}
+  showTextMode:false
 };
 
 function load(){
   try{
-    const r=localStorage.getItem("mm_r"),c=localStorage.getItem("mm_c"),s=localStorage.getItem("mm_s"),og=localStorage.getItem("mm_og");
+    const r=localStorage.getItem("mm_r");
+    const c=localStorage.getItem("mm_c");
+    const s=localStorage.getItem("mm_s");
+    const col=localStorage.getItem("mm_col");
     if(r) S.recipes=JSON.parse(r);
     if(c) S.cookbooks=JSON.parse(c);
-    if(s) S.shopping=JSON.parse(s);
-    if(og) S.openGroups=JSON.parse(og);
-    // migrazione vecchio formato flat
-    if(S.shopping.length&&S.shopping[0].nome!==undefined){
-      S.shopping=[{groupId:"manuale",titolo:"Articoli manuali",items:S.shopping.map(i=>({...i,categoria:"Altro"}))}];
+    if(s){
+      S.shopping=JSON.parse(s);
+      // migrazione vecchio formato flat
+      if(S.shopping.length&&S.shopping[0].nome!==undefined){
+        S.shopping=[{groupId:"manuale",titolo:"Articoli manuali",color:"#607d8b",
+          items:S.shopping.map(i=>({...i,categoria:"Altro"}))}];
+      }
     }
+    if(col) S.collapsed=new Set(JSON.parse(col));
   }catch(e){}
 }
 
@@ -137,10 +149,10 @@ function save(){
   localStorage.setItem("mm_r",JSON.stringify(S.recipes));
   localStorage.setItem("mm_c",JSON.stringify(S.cookbooks));
   localStorage.setItem("mm_s",JSON.stringify(S.shopping));
-  localStorage.setItem("mm_og",JSON.stringify(S.openGroups));
+  localStorage.setItem("mm_col",JSON.stringify([...S.collapsed]));
 }
 
-function showLoading(show,msg){
+function setLoading(show,msg){
   document.getElementById("loadingOverlay").style.display=show?"flex":"none";
   if(msg) document.getElementById("loadingSub").textContent=msg;
 }
@@ -160,44 +172,28 @@ async function fetchPage(url){
   return await res.json();
 }
 
-// Categorizza ingredienti con AI
-async function categorizzaIngredienti(ingredienti){
-  try{
-    const json=await callClaude(
-      "Categorizza questi ingredienti nelle seguenti categorie: "+CAT_LIST.join(", ")+
-      ".\nIngredienti: "+ingredienti.join(", ")+
-      "\nRispondi SOLO con JSON valido senza backtick:\n"+
-      '{"items":[{"nome":"...","categoria":"..."}]}'
-    );
-    return JSON.parse(json).items.map(i=>({...i,checked:false}));
-  }catch(e){
-    return ingredienti.map(nome=>({nome,categoria:"Altro",checked:false}));
-  }
-}
-
 async function importRecipe(){
-  const urlInp=document.getElementById("urlInp");
-  if(!urlInp) return;
-  const url=urlInp.value.trim();
+  const inp=document.getElementById("urlInp");
+  if(!inp) return;
+  const url=inp.value.trim();
   if(!url) return;
   S.loading=true; S.error=""; S.showTextMode=false;
-  showLoading(true,"Sto analizzando la pagina..."); render();
+  setLoading(true,"Recupero contenuto pagina..."); render();
   try{
     const page=await fetchPage(url);
     if(!page.title&&!page.description&&!page.rawSnippet){
-      S.loading=false; showLoading(false);
-      S.showTextMode=true; S.error="Non riesco a leggere questa pagina. Incolla il testo qui sotto.";
-      render(); return;
+      S.loading=false; setLoading(false);
+      S.showTextMode=true; render(); return;
     }
-    const context=[
+    const ctx=[
       page.title?"Titolo: "+page.title:"",
       page.description?"Descrizione: "+page.description:"",
       page.rawSnippet?"Testo: "+page.rawSnippet:"",
       "URL: "+url
     ].filter(Boolean).join("\n");
-    showLoading(true,"L'AI sta estraendo la ricetta...");
+    setLoading(true,"L'AI sta estraendo la ricetta...");
     const json=await callClaude(
-      "Analizza questo contenuto e ricava la ricetta.\n"+context+
+      "Analizza questo contenuto e ricava la ricetta.\n"+ctx+
       "\nRispondi SOLO con JSON valido senza backtick:\n"+
       '{"titolo":"...","ingredienti":["..."],"istruzioni":["..."],"tempoPreparazione":"...","porzioni":"...","note":""}'
     );
@@ -207,21 +203,21 @@ async function importRecipe(){
     r.notaPersonale="";
     S.recipes.unshift(r); save();
     S.selected=r; S.editingNote=false;
-    urlInp.value="";
+    inp.value="";
   }catch(e){
     S.error="Impossibile estrarre la ricetta. Prova ad incollare il testo.";
     S.showTextMode=true;
   }
-  S.loading=false; showLoading(false); render();
+  S.loading=false; setLoading(false); render();
 }
 
 async function importFromText(){
-  const txt=document.getElementById("textInp")?.value.trim();
-  if(!txt) return;
-  S.loading=true; showLoading(true,"L'AI sta elaborando il testo..."); render();
+  const ta=document.getElementById("textInp");
+  if(!ta||!ta.value.trim()) return;
+  S.loading=true; setLoading(true,"L'AI elabora il testo..."); render();
   try{
     const json=await callClaude(
-      "Estrai la ricetta da questo testo.\n"+txt+
+      "Estrai la ricetta da questo testo.\n"+ta.value.trim()+
       "\nRispondi SOLO con JSON valido senza backtick:\n"+
       '{"titolo":"...","ingredienti":["..."],"istruzioni":["..."],"tempoPreparazione":"...","porzioni":"...","note":""}'
     );
@@ -231,35 +227,54 @@ async function importFromText(){
     r.notaPersonale="";
     S.recipes.unshift(r); save();
     S.selected=r; S.editingNote=false; S.showTextMode=false;
-  }catch(e){ S.error="Impossibile elaborare il testo. Riprova."; }
-  S.loading=false; showLoading(false); render();
+  }catch(e){ S.error="Impossibile elaborare il testo."; }
+  S.loading=false; setLoading(false); render();
 }
 
 async function addToShopping(){
   const r=S.selected;
-  const existing=S.shopping.find(g=>g.groupId===String(r.id));
-  if(existing){ alert("Questa ricetta è già nella lista della spesa!"); return; }
-  S.addingToList=true; render();
-  showLoading(true,"Classifico gli ingredienti per categoria...");
+  if(S.shopping.find(g=>g.groupId===String(r.id))){
+    alert("Questa ricetta è già nella lista della spesa!"); return;
+  }
+  S.addingToList=true; setLoading(true,"Organizzo ingredienti per categoria..."); render();
   try{
-    const items=await categorizzaIngredienti(r.ingredienti);
-    const group={groupId:String(r.id),titolo:r.titolo,items};
+    const json=await callClaude(
+      "Categorizza questi ingredienti per corsia supermercato.\n"+
+      "Ingredienti: "+r.ingredienti.join(", ")+
+      "\nRispondi SOLO con JSON valido senza backtick:\n"+
+      '{"items":[{"nome":"...","categoria":"Frutta e Verdura|Carne e Pesce|Latticini|Pane e Cereali|Condimenti|Surgelati|Altro"}]}'
+    );
+    const res=JSON.parse(json);
+    const group={
+      groupId:String(r.id),
+      titolo:r.titolo,
+      color:"#e8472a",
+      items:res.items.map(i=>({...i,checked:false}))
+    };
     S.shopping.push(group);
-    S.openGroups[String(r.id)]=true;
     save(); S.selected=null; nav("spesa");
-  }catch(e){ S.error="Errore aggiunta alla spesa."; }
-  S.addingToList=false; showLoading(false); render();
+  }catch(e){
+    // fallback senza AI
+    const group={groupId:String(r.id),titolo:r.titolo,color:"#e8472a",
+      items:r.ingredienti.map(n=>({nome:n,categoria:"Altro",checked:false}))};
+    S.shopping.push(group); save(); S.selected=null; nav("spesa");
+  }
+  S.addingToList=false; setLoading(false); render();
 }
 
 function addManualItem(){
   const inp=document.getElementById("manualInp");
-  if(!inp) return;
-  const val=inp.value.trim();
-  if(!val) return;
+  if(!inp||!inp.value.trim()) return;
   let m=S.shopping.find(g=>g.groupId==="manuale");
-  if(!m){ m={groupId:"manuale",titolo:"Articoli manuali",items:[]}; S.shopping.push(m); S.openGroups["manuale"]=true; }
-  m.items.push({nome:val,categoria:"Altro",checked:false});
+  if(!m){ m={groupId:"manuale",titolo:"Articoli manuali",color:"#607d8b",items:[]}; S.shopping.push(m); }
+  m.items.push({nome:inp.value.trim(),categoria:"Altro",checked:false});
   save(); inp.value=""; render();
+}
+
+function toggleCollapse(gid){
+  if(S.collapsed.has(gid)) S.collapsed.delete(gid);
+  else S.collapsed.add(gid);
+  save(); render();
 }
 
 function toggleItem(gid,idx){
@@ -270,20 +285,14 @@ function toggleItem(gid,idx){
 
 function removeItem(gid,idx){
   const g=S.shopping.find(x=>x.groupId===gid);
-  if(g){ g.items.splice(idx,1); if(!g.items.length){S.shopping=S.shopping.filter(x=>x.groupId!==gid);delete S.openGroups[gid];} }
+  if(g){ g.items.splice(idx,1); if(!g.items.length) S.shopping=S.shopping.filter(x=>x.groupId!==gid); }
   save(); render();
 }
 
 function removeGroup(gid){
   if(!confirm("Rimuovere questo gruppo dalla lista?")) return;
   S.shopping=S.shopping.filter(g=>g.groupId!==gid);
-  delete S.openGroups[gid];
-  save(); render();
-}
-
-function toggleGroup(gid){
-  S.openGroups[gid]=!S.openGroups[gid];
-  save(); render();
+  S.collapsed.delete(gid); save(); render();
 }
 
 function clearCheckedAll(){
@@ -302,9 +311,9 @@ function recipeToText(r){
   if(r.tempoPreparazione) t+="⏱ "+r.tempoPreparazione;
   if(r.porzioni) t+=" · 👥 "+r.porzioni+" porzioni";
   t+="\n\n🧂 INGREDIENTI\n";
-  (r.ingredienti||[]).forEach(i=>{ t+="• "+i+"\n"; });
+  (r.ingredienti||[]).forEach(i=>t+="• "+i+"\n");
   t+="\n📋 PREPARAZIONE\n";
-  (r.istruzioni||[]).forEach((s,i)=>{ t+=(i+1)+". "+s+"\n"; });
+  (r.istruzioni||[]).forEach((s,i)=>t+=(i+1)+". "+s+"\n");
   if(r.note) t+="\n📝 "+r.note;
   if(r.url) t+="\n\n🔗 "+r.url;
   t+="\n\n— Inviato con MyMeal 🍴";
@@ -319,7 +328,7 @@ function shareEmail(){
 function printRecipe(){ window.print(); }
 
 function exportBackup(){
-  const data={recipes:S.recipes,cookbooks:S.cookbooks,shopping:S.shopping,exportedAt:new Date().toISOString()};
+  const data={recipes:S.recipes,cookbooks:S.cookbooks,shopping:S.shopping,exportedAt:new Date().toISOString(),version:2};
   const blob=new Blob([JSON.stringify(data,null,2)],{type:"application/json"});
   const a=document.createElement("a");
   a.href=URL.createObjectURL(blob);
@@ -328,8 +337,7 @@ function exportBackup(){
 }
 
 function importBackup(e){
-  const file=e.target.files[0];
-  if(!file) return;
+  const file=e.target.files[0]; if(!file) return;
   const reader=new FileReader();
   reader.onload=function(ev){
     try{
@@ -337,8 +345,8 @@ function importBackup(e){
       if(!data.recipes) throw new Error();
       if(!confirm("Ripristinare il backup? Le ricette attuali verranno sostituite.")) return;
       S.recipes=data.recipes||[]; S.cookbooks=data.cookbooks||[...DEFAULT_CB]; S.shopping=data.shopping||[];
-      save(); render(); alert("✅ Backup ripristinato!");
-    }catch(err){ alert("❌ File non valido."); }
+      save(); render(); alert("✅ Backup ripristinato! "+S.recipes.length+" ricette caricate.");
+    }catch(err){ alert("❌ File non valido. Usa solo backup MyMeal."); }
   };
   reader.readAsText(file); e.target.value="";
 }
@@ -369,12 +377,12 @@ function listHTML(){
   ).join("");
   const textBox=S.showTextMode?`
     <div class="text-mode-box">
-      <div style="font-size:13px;font-weight:700;color:#555;margin-bottom:8px">📋 Incolla qui il testo della ricetta</div>
+      <div style="font-size:13px;font-weight:700;color:#555;margin-bottom:8px">📋 Incolla il testo della ricetta</div>
       <textarea id="textInp" rows="6" style="width:100%;padding:10px;border:1.5px solid #ddd;border-radius:8px;font-size:13px;outline:none;resize:vertical;font-family:inherit"
-        placeholder="Incolla la descrizione del video, la caption di Instagram, o il testo della ricetta..."></textarea>
+        placeholder="Incolla qui la descrizione, la caption o il testo della ricetta..."></textarea>
       <div class="row" style="margin-top:8px">
         <button class="btn btn-red" style="flex:1;padding:10px 0" onclick="importFromText()">🤖 Estrai ricetta</button>
-        <button class="btn" style="background:#eee;color:#666;padding:10px 16px" onclick="S.showTextMode=false;S.error='';render()">✕</button>
+        <button class="btn" style="background:#eee;color:#666;padding:10px 16px" onclick="S.showTextMode=false;render()">✕</button>
       </div>
     </div>`:"";
   const list=filtered.length===0
@@ -406,7 +414,7 @@ function listHTML(){
       ${S.error?`<div class="err">${S.error}</div>`:""}
       ${textBox}
       <div style="font-size:12px;color:#bbb;margin-top:10px;text-align:center">
-        oppure <button style="background:none;border:none;color:#e8472a;cursor:pointer;font-size:12px;font-weight:600" onclick="S.showTextMode=!S.showTextMode;render()">incolla il testo della ricetta</button>
+        oppure <button style="background:none;border:none;color:#e8472a;cursor:pointer;font-size:12px;font-weight:600;font-family:inherit" onclick="S.showTextMode=!S.showTextMode;render()">incolla il testo della ricetta</button>
       </div>
     </div>
     <div style="margin-bottom:12px">
@@ -436,7 +444,7 @@ function detailHTML(){
        </div>`
     :r.notaPersonale
       ?`<div class="note-personal">${r.notaPersonale}</div>`
-      :`<div style="font-size:13px;color:#bbb;font-style:italic">Nessuna nota. Premi "+ Aggiungi".</div>`;
+      :`<div style="font-size:13px;color:#bbb;font-style:italic">Nessuna nota. Premi "+ Aggiungi" per annotare varianti o consigli.</div>`;
   const inSpesa=S.shopping.find(g=>g.groupId===String(r.id));
   return `
     <button class="back" onclick="S.selected=null;S.editingNote=false;render()">← Torna alle ricette</button>
@@ -463,7 +471,8 @@ function detailHTML(){
         <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px">
           <div class="sec-title" style="margin:0">✏️ Note personali</div>
           ${!S.editingNote?`<button class="btn-sm" onclick="S.noteText='${(r.notaPersonale||"").replace(/'/g,"\\'")}';S.editingNote=true;render()">${r.notaPersonale?"Modifica":"+ Aggiungi"}</button>`:""}
-        </div>${noteSection}
+        </div>
+        ${noteSection}
       </div>
       ${r.url?`<div style="font-size:12px;color:#aaa;margin-bottom:16px;word-break:break-all">🔗 ${r.url}</div>`:""}
       <div class="row action-row">
@@ -485,12 +494,15 @@ function cbHTML(){
     const del=!DEFAULT_CB.includes(name)
       ?`<button onclick="event.stopPropagation();S.cookbooks=S.cookbooks.filter(c=>c!=='${name}');save();render()" style="background:none;border:none;cursor:pointer;color:#ccc;font-size:18px">×</button>`:"";
     return `<div class="card" style="cursor:pointer;display:flex;align-items:center;justify-content:space-between" onclick="S.filter='${name}';nav('ricette')">
-      <div><div style="font-weight:700;font-size:15px;color:#222">${CB_ICONS[name]||"📁"} ${name}</div>
-      <div style="font-size:13px;color:#888;margin-top:2px">${count} ricett${count===1?"a":"e"}</div></div>
+      <div>
+        <div style="font-weight:700;font-size:15px;color:#222">${CB_ICONS[name]||"📁"} ${name}</div>
+        <div style="font-size:13px;color:#888;margin-top:2px">${count} ricett${count===1?"a":"e"}</div>
+      </div>
       <div style="display:flex;align-items:center;gap:8px"><div class="badge">${count}</div>${del}</div>
     </div>`;
   }).join("");
   const tot=S.shopping.reduce((a,g)=>a+g.items.length,0);
+  const spuntati=S.shopping.reduce((a,g)=>a+g.items.filter(i=>i.checked).length,0);
   return `
     <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px">
       <div style="font-weight:700;font-size:16px">I tuoi ricettari</div>
@@ -499,11 +511,13 @@ function cbHTML(){
     ${form}${list}
     <div class="card" style="margin-top:8px">
       <div style="font-weight:700;font-size:15px;margin-bottom:6px;color:#333">💾 Backup e Ripristino</div>
-      <div style="font-size:13px;color:#888;margin-bottom:12px">${S.recipes.length} ricette salvate · ${tot} articoli in spesa</div>
+      <div style="font-size:13px;color:#666;margin-bottom:4px">📚 ${S.recipes.length} ricette salvate</div>
+      <div style="font-size:13px;color:#666;margin-bottom:12px">🛒 ${tot} articoli in lista · ${spuntati} spuntati</div>
       <div class="backup-row">
-        <button class="btn btn-blue" style="flex:1;padding:11px 0;font-size:13px" onclick="exportBackup()">📤 Esporta backup</button>
-        <button class="btn" style="flex:1;padding:11px 0;font-size:13px;background:#f0f7ff;color:#2196f3;border:1.5px solid #2196f3" onclick="document.getElementById('importFile').click()">📥 Ripristina backup</button>
+        <button class="btn btn-green" style="flex:1;padding:11px 0;font-size:13px" onclick="exportBackup()">📤 Esporta backup</button>
+        <button class="btn btn-blue" style="flex:1;padding:11px 0;font-size:13px" onclick="document.getElementById('importFile').click()">📥 Ripristina backup</button>
       </div>
+      <div style="font-size:11px;color:#bbb;margin-top:8px;text-align:center">Il backup salva tutte le ricette, i ricettari e la lista della spesa</div>
     </div>`;
 }
 
@@ -516,43 +530,54 @@ function addCb(){
 function shoppingHTML(){
   const hasChecked=S.shopping.some(g=>g.items.some(i=>i.checked));
   const groups=S.shopping.map(g=>{
-    const isOpen=!!S.openGroups[g.groupId];
+    const isOpen=!S.collapsed.has(g.groupId);
     const done=g.items.filter(i=>i.checked).length;
-    const total=g.items.length;
+    const pct=g.items.length?Math.round(done/g.items.length*100):0;
     // raggruppa per categoria
-    const byCat=g.items.reduce((acc,item,idx)=>{
-      const cat=item.categoria||"Altro";
-      if(!acc[cat]) acc[cat]=[];
-      acc[cat].push({...item,idx});
+    const byCat=CAT_ORDER.reduce((acc,cat)=>{
+      const items=g.items.map((item,idx)=>({...item,idx})).filter(i=>i.categoria===cat);
+      if(items.length) acc[cat]=items;
       return acc;
     },{});
-    const catSections=Object.entries(byCat).map(([cat,items])=>{
-      const col=CAT_COLORS[cat]||"#607d8b";
-      const rows=items.map(item=>`
-        <div style="display:flex;align-items:center;padding:10px 14px;border-bottom:1px solid #f5f5f5;opacity:${item.checked?.5:1}">
-          <div class="check-box ${item.checked?"on":""}" onclick="toggleItem('${g.groupId}',${item.idx})">
-            ${item.checked?'<span style="color:white;font-size:13px">✓</span>':""}
-          </div>
-          <div style="flex:1;font-size:14px;color:#333;margin-left:10px;text-decoration:${item.checked?"line-through":"none"}">${item.nome}</div>
-          <span class="cat-pill" style="background:${col}">${cat.split(" ")[0]}</span>
-          <button onclick="removeItem('${g.groupId}',${item.idx})" style="background:none;border:none;cursor:pointer;color:#ddd;font-size:16px;padding:0 0 0 8px">×</button>
-        </div>`).join("");
-      return `<div class="cat-section-title"><div class="cat-dot" style="background:${col}"></div>${cat}</div>${rows}`;
-    }).join("");
+    const other=g.items.map((item,idx)=>({...item,idx})).filter(i=>!CAT_ORDER.slice(0,-1).includes(i.categoria));
+    if(other.length) byCat["Altro"]=[...(byCat["Altro"]||[]),...other.filter(o=>!Object.values(byCat).flat().find(x=>x.idx===o.idx))];
+
+    const catSections=Object.entries(byCat).map(([cat,items])=>`
+      <div class="cat-section">
+        <div class="cat-label">
+          <div class="cat-dot" style="background:${CAT_COLORS[cat]||'#888'}"></div>
+          ${cat}
+        </div>
+        ${items.map(item=>`
+          <div class="spesa-item">
+            <div class="check-box ${item.checked?"on":""}" onclick="toggleItem('${g.groupId}',${item.idx})">
+              ${item.checked?'<span style="color:white;font-size:13px">✓</span>':""}
+            </div>
+            <div style="flex:1;font-size:14px;color:#333;margin-left:12px;text-decoration:${item.checked?"line-through":"none"};opacity:${item.checked?.6:1}">${item.nome}</div>
+            <button onclick="removeItem('${g.groupId}',${item.idx})" style="background:none;border:none;cursor:pointer;color:#ddd;font-size:18px;padding:0 4px">×</button>
+          </div>`).join("")}
+      </div>`).join("");
+
     return `<div class="spesa-group">
-      <div class="spesa-group-header" onclick="toggleGroup('${g.groupId}')">
+      <div class="spesa-group-header" onclick="toggleCollapse('${g.groupId}')">
         <div class="spesa-group-left">
-          <span class="spesa-group-arrow ${isOpen?'open':''}">▶</span>
-          <div>
+          <div class="spesa-group-color" style="background:${g.groupId==='manuale'?'#607d8b':'#e8472a'}"></div>
+          <div class="spesa-group-info">
             <div class="spesa-group-title">${g.groupId==="manuale"?"📝":"🍽"} ${g.titolo}</div>
-            <div class="spesa-group-sub">${done}/${total} spuntati</div>
+            <div class="spesa-group-sub">${done}/${g.items.length} articoli
+              <span style="display:inline-block;width:60px;height:4px;background:#eee;border-radius:2px;vertical-align:middle;margin-left:6px;overflow:hidden">
+                <span style="display:block;width:${pct}%;height:100%;background:#4caf50;border-radius:2px"></span>
+              </span>
+            </div>
           </div>
         </div>
+        <span class="spesa-group-arrow ${isOpen?'open':''}">▶</span>
         <button class="btn-remove-group" onclick="event.stopPropagation();removeGroup('${g.groupId}')">Rimuovi</button>
       </div>
-      <div class="spesa-group-body ${isOpen?'open':''}">${catSections}</div>
+      ${isOpen?`<div style="padding-bottom:8px">${catSections}</div>`:""}
     </div>`;
   }).join("");
+
   return `
     <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px">
       <div style="font-weight:700;font-size:16px">🛒 Lista della spesa</div>

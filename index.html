@@ -2,7 +2,7 @@
 <html lang="it">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
   <title>MyMeal</title>
   <meta name="theme-color" content="#e8472a" />
   <meta name="mobile-web-app-capable" content="yes" />
@@ -10,110 +10,182 @@
   <meta name="apple-mobile-web-app-title" content="MyMeal" />
   <link rel="manifest" href="manifest.json" />
   <style>
-    *{box-sizing:border-box;margin:0;padding:0}
-    body{font-family:'Segoe UI',sans-serif;background:#f5f5f0;min-height:100vh}
-    #app{max-width:480px;margin:0 auto}
-    .header{background:linear-gradient(135deg,#e8472a,#c73820);padding:20px 16px 16px;color:white}
-    .header h1{font-size:24px;font-weight:700}
-    .header p{font-size:12px;opacity:.85;margin-top:2px}
-    .tabs{display:flex;background:white;border-bottom:2px solid #eee}
-    .tab-btn{flex:1;padding:12px 0;border:none;background:none;cursor:pointer;font-weight:400;color:#888;border-bottom:2px solid transparent;font-size:14px}
-    .tab-btn.active{font-weight:700;color:#e8472a;border-bottom:2px solid #e8472a}
+    *{box-sizing:border-box;margin:0;padding:0; -webkit-tap-highlight-color: transparent;}
+    body{font-family:'Segoe UI',system-ui,sans-serif;background:#f5f5f3;min-height:100vh;}
+    #app{max-width:480px;margin:0 auto;position:relative;padding-bottom:90px;} /* Spazio per la bottom nav */
+    
+    /* Header */
+    .header{background:linear-gradient(135deg,#e8472a,#c73820);padding:20px 20px 24px;color:white;border-bottom-left-radius:24px;border-bottom-right-radius:24px;box-shadow:0 4px 12px rgba(232,71,42,0.15);}
+    .header h1{font-size:26px;font-weight:800;letter-spacing:-0.5px;}
+    .header p{font-size:13px;opacity:0.9;margin-top:2px;font-weight:500;}
+    
     .content{padding:16px}
-    .card{background:white;border-radius:12px;padding:16px;margin-bottom:10px;box-shadow:0 2px 8px rgba(0,0,0,.06)}
-    .row{display:flex;gap:8px}
-    .inp{flex:1;padding:10px 12px;border:1.5px solid #ddd;border-radius:8px;font-size:14px;outline:none;font-family:inherit}
-    .btn{padding:10px 16px;border:none;border-radius:8px;cursor:pointer;font-weight:700;font-size:14px;font-family:inherit}
-    .btn-red{background:#e8472a;color:white}
-    .btn-red:disabled{background:#ccc;cursor:not-allowed}
-    .btn-green{background:#4caf50;color:white;flex:1;padding:12px 0}
-    .btn-ghost{background:#fff0f0;color:#e8472a;border:1.5px solid #e8472a;padding:12px 16px}
-    .btn-sm{font-size:12px;padding:4px 10px;border-radius:6px;border:1px solid #e8472a;color:#e8472a;background:none;cursor:pointer;font-weight:600;font-family:inherit}
-    .btn-blue{background:#2196f3;color:white}
-    .btn-wa{background:#25d366;color:white}
-    .chip-row{display:flex;gap:8px;overflow-x:auto;padding-bottom:4px;margin-bottom:12px}
-    .chip{padding:6px 14px;border-radius:20px;border:none;cursor:pointer;white-space:nowrap;font-size:13px;font-family:inherit}
-    .chip.on{background:#e8472a;color:white;font-weight:700}
-    .chip.off{background:#eee;color:#555}
-    .recipe-card{background:white;border-radius:12px;margin-bottom:10px;box-shadow:0 2px 8px rgba(0,0,0,.06);cursor:pointer;border-left:4px solid #e8472a;overflow:hidden}
-    .recipe-card-img{width:100%;height:140px;object-fit:cover;display:block}
-    .recipe-card-body{padding:14px}
-    .recipe-card h3{font-weight:700;font-size:15px;color:#222;margin-bottom:4px}
-    .meta{display:flex;gap:12px;font-size:12px;color:#888;flex-wrap:wrap}
-    .recipe-hero{width:100%;height:200px;object-fit:cover;border-radius:12px;margin-bottom:16px;display:block}
-    .step{display:flex;gap:10px;margin-bottom:10px}
-    .step-num{min-width:24px;height:24px;border-radius:50%;background:#e8472a;color:white;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;flex-shrink:0}
-    .note-ai{background:#fff8f0;border-radius:8px;padding:12px;margin-bottom:16px;font-size:13px;color:#666;border-left:3px solid #ff9800}
-    .note-personal{background:#f0f7ff;border-radius:8px;padding:12px;font-size:14px;color:#333;border-left:3px solid #2196f3;line-height:1.6;white-space:pre-wrap}
-    .check-box{width:22px;height:22px;border-radius:6px;cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0;border:2px solid #ddd;background:white;transition:all .15s}
-    .check-box.on{background:#4caf50;border-color:#4caf50}
-    .badge{background:#e8472a;color:white;border-radius:50%;width:28px;height:28px;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:13px}
-    .empty{text-align:center;color:#aaa;padding:40px 0}
-    .empty .ico{font-size:48px;margin-bottom:12px}
-    .err{color:#e8472a;font-size:13px;margin-top:8px}
-    .back{background:none;border:none;color:#e8472a;cursor:pointer;font-size:14px;margin-bottom:12px;font-weight:700;font-family:inherit}
-    .sec-title{font-weight:700;font-size:15px;margin-bottom:8px;color:#333}
-    .ing-row{padding:6px 0;border-bottom:1px solid #f0f0f0;font-size:14px;color:#444}
-    label.lbl{font-size:13px;color:#888;display:block;margin-bottom:4px}
-    select.sel{padding:8px 12px;border:1.5px solid #ddd;border-radius:8px;font-size:14px;width:100%;background:#fafafa;font-family:inherit}
-    .loading-overlay{position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(255,255,255,0.92);display:flex;flex-direction:column;align-items:center;justify-content:center;z-index:999}
-    .loading-spinner{width:48px;height:48px;border:4px solid #eee;border-top:4px solid #e8472a;border-radius:50%;animation:spin 0.8s linear infinite;margin-bottom:16px}
+    
+    /* UI Elements Generici */
+    .card{background:white;border-radius:20px;padding:20px;margin-bottom:12px;box-shadow:0 4px 16px rgba(0,0,0,.04);}
+    .row{display:flex;gap:10px}
+    .inp{flex:1;padding:12px 16px;border:1.5px solid #eaeaea;border-radius:14px;font-size:15px;outline:none;font-family:inherit;transition:border-color 0.2s;}
+    .inp:focus{border-color:#e8472a;}
+    .btn{padding:12px 20px;border:none;border-radius:14px;cursor:pointer;font-weight:700;font-size:15px;font-family:inherit;transition:transform 0.1s, opacity 0.2s;}
+    .btn:active{transform:scale(0.98);}
+    .btn-red{background:#e8472a;color:white;box-shadow:0 4px 12px rgba(232,71,42,0.2);}
+    .btn-red:disabled{background:#ccc;box-shadow:none;cursor:not-allowed}
+    .btn-green{background:#4caf50;color:white;flex:1;box-shadow:0 4px 12px rgba(76,175,80,0.2);}
+    .btn-ghost{background:#fff0f0;color:#e8472a;border:1.5px solid #e8472a;padding:12px 16px;}
+    .btn-sm{font-size:13px;padding:6px 12px;border-radius:8px;border:1px solid #e8472a;color:#e8472a;background:none;cursor:pointer;font-weight:600;}
+    .btn-blue{background:#2196f3;color:white;box-shadow:0 4px 12px rgba(33,150,243,0.2);}
+    .btn-wa{background:#25d366;color:white;box-shadow:0 4px 12px rgba(37,211,102,0.2);}
+    
+    /* Chips */
+    .chip-row{display:flex;gap:10px;overflow-x:auto;padding-bottom:8px;margin-bottom:12px;scrollbar-width:none;}
+    .chip-row::-webkit-scrollbar{display:none;}
+    .chip{padding:8px 16px;border-radius:24px;border:none;cursor:pointer;white-space:nowrap;font-size:14px;font-family:inherit;transition:all 0.2s;}
+    .chip.on{background:#222;color:white;font-weight:700;box-shadow:0 4px 10px rgba(0,0,0,0.15);}
+    .chip.off{background:white;color:#666;box-shadow:0 2px 6px rgba(0,0,0,0.03);border:1px solid #f0f0f0;}
+    
+    /* Recipe Card - LISTA COMPATTA (Task 1) */
+    .recipe-card{background:white;border-radius:18px;margin-bottom:12px;box-shadow:0 4px 12px rgba(0,0,0,.04);cursor:pointer;display:flex;flex-direction:row;align-items:center;border:none;border-left:4px solid #e8472a;transition:transform 0.1s;}
+    .recipe-card:active{transform:scale(0.98);}
+    .recipe-card-img{width:85px;height:85px;object-fit:cover;border-radius:12px;margin:12px 0 12px 12px;flex-shrink:0;box-shadow:0 2px 8px rgba(0,0,0,0.08);}
+    .recipe-card-body{padding:14px;flex:1;display:flex;flex-direction:column;justify-content:center;overflow:hidden;}
+    .recipe-card h3{font-weight:700;font-size:16px;color:#222;margin-bottom:6px;line-height:1.2;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;}
+    .meta{display:flex;gap:10px;font-size:12px;color:#888;flex-wrap:wrap;}
+    
+    /* Dettaglio Ricetta */
+    .recipe-hero{width:100%;height:220px;object-fit:cover;border-radius:16px;margin-bottom:20px;display:block;box-shadow:0 4px 16px rgba(0,0,0,0.1);}
+    .step{display:flex;gap:12px;margin-bottom:14px;}
+    .step-num{min-width:26px;height:26px;border-radius:50%;background:#e8472a;color:white;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:700;flex-shrink:0;}
+    .note-ai{background:#fff8f0;border-radius:12px;padding:14px;margin-bottom:20px;font-size:14px;color:#666;border-left:4px solid #ff9800;line-height:1.5;}
+    .note-personal{background:#f0f7ff;border-radius:12px;padding:14px;font-size:14px;color:#333;border-left:4px solid #2196f3;line-height:1.6;white-space:pre-wrap;}
+    .check-box{width:24px;height:24px;border-radius:8px;cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0;border:2px solid #ddd;background:white;transition:all .15s;}
+    .check-box.on{background:#4caf50;border-color:#4caf50;}
+    .badge{background:#e8472a;color:white;border-radius:50%;padding:4px 10px;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:12px;}
+    .empty{text-align:center;color:#aaa;padding:60px 0;}
+    .empty .ico{font-size:54px;margin-bottom:16px;filter:drop-shadow(0 4px 8px rgba(0,0,0,0.05));}
+    .err{color:#e8472a;font-size:13px;margin-top:8px;background:#ffeeee;padding:10px;border-radius:8px;}
+    .back{background:none;border:none;color:#e8472a;cursor:pointer;font-size:15px;margin-bottom:16px;font-weight:700;font-family:inherit;display:flex;align-items:center;gap:4px;}
+    .sec-title{font-weight:800;font-size:17px;margin-bottom:12px;color:#222;}
+    .ing-row{padding:8px 0;border-bottom:1px solid #f0f0f0;font-size:15px;color:#444;line-height:1.4;}
+    label.lbl{font-size:13px;color:#888;display:block;margin-bottom:6px;font-weight:600;}
+    select.sel{padding:12px 16px;border:1.5px solid #eaeaea;border-radius:12px;font-size:15px;width:100%;background:#fafafa;font-family:inherit;outline:none;}
+    
+    /* Loading Overlay */
+    .loading-overlay{position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(255,255,255,0.92);backdrop-filter:blur(5px);display:flex;flex-direction:column;align-items:center;justify-content:center;z-index:9999;}
+    .loading-spinner{width:54px;height:54px;border:4px solid #eee;border-top:4px solid #e8472a;border-radius:50%;animation:spin 0.8s linear infinite;margin-bottom:20px;}
     @keyframes spin{to{transform:rotate(360deg)}}
-    .loading-text{font-size:15px;color:#555;font-weight:600}
-    .loading-sub{font-size:13px;color:#aaa;margin-top:6px}
+    .loading-text{font-size:17px;color:#222;font-weight:700;}
+    .loading-sub{font-size:14px;color:#888;margin-top:8px;}
+    
+    /* Bottom Navigation Bar (Task 2) */
+    .bottom-nav{position:fixed;bottom:0;left:50%;transform:translateX(-50%);width:100%;max-width:480px;background:rgba(255,255,255,0.98);backdrop-filter:blur(10px);display:flex;justify-content:space-around;padding:12px 0 calc(12px + env(safe-area-inset-bottom));box-shadow:0 -4px 24px rgba(0,0,0,0.06);z-index:900;border-top-left-radius:24px;border-top-right-radius:24px;}
+    .nav-btn{flex:1;display:flex;flex-direction:column;align-items:center;background:none;border:none;color:#999;font-size:11px;font-weight:600;cursor:pointer;gap:4px;}
+    .nav-btn .icon{font-size:22px;margin-bottom:2px;filter:grayscale(100%) opacity(0.6);transition:all 0.2s;}
+    .nav-btn.active{color:#e8472a;}
+    .nav-btn.active .icon{filter:none;transform:scale(1.15);}
+
+    /* Floating Action Button & Modal (Task 3) */
+    .fab-container{position:fixed;bottom:90px;left:50%;transform:translateX(-50%);width:100%;max-width:480px;pointer-events:none;z-index:950;}
+    .fab{position:absolute;right:20px;bottom:0;pointer-events:auto;background:#e8472a;color:white;width:60px;height:60px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:32px;font-weight:300;box-shadow:0 6px 16px rgba(232,71,42,0.4);cursor:pointer;transition:transform 0.2s;}
+    .fab:active{transform:scale(0.9);}
+    
+    .modal-overlay{position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,0.5);backdrop-filter:blur(4px);z-index:2000;display:flex;align-items:flex-end;justify-content:center;}
+    .modal-content{background:white;width:100%;max-width:480px;border-top-left-radius:28px;border-top-right-radius:28px;padding:24px 24px calc(24px + env(safe-area-inset-bottom));box-shadow:0 -10px 40px rgba(0,0,0,0.1);animation:slideUp 0.3s cubic-bezier(0.16, 1, 0.3, 1);}
+    @keyframes slideUp{from{transform:translateY(100%);}to{transform:translateY(0);}}
+
     /* SPESA COLLASSABILE */
-    .spesa-group{background:white;border-radius:12px;margin-bottom:12px;box-shadow:0 2px 8px rgba(0,0,0,.06);overflow:hidden}
-    .spesa-group-header{display:flex;align-items:center;justify-content:space-between;padding:13px 14px;cursor:pointer;user-select:none}
-    .spesa-group-left{display:flex;align-items:center;gap:10px}
-    .spesa-group-dot{width:12px;height:12px;border-radius:50%;flex-shrink:0}
-    .spesa-group-title{font-weight:700;font-size:14px;color:#333}
-    .spesa-group-sub{font-size:12px;color:#aaa;margin-top:2px}
-    .spesa-arrow{font-size:16px;color:#aaa;transition:transform .2s}
-    .spesa-arrow.open{transform:rotate(180deg)}
-    .spesa-group-actions{display:flex;align-items:center;gap:8px}
-    .btn-remove-group{background:none;border:1px solid #e8472a;cursor:pointer;color:#e8472a;font-size:11px;font-weight:600;font-family:inherit;padding:3px 8px;border-radius:6px}
-    .spesa-body{display:none}
-    .spesa-body.open{display:block}
+    .spesa-group{background:white;border-radius:18px;margin-bottom:14px;box-shadow:0 4px 12px rgba(0,0,0,.04);overflow:hidden;}
+    .spesa-group-header{display:flex;align-items:center;justify-content:space-between;padding:16px;cursor:pointer;user-select:none;}
+    .spesa-group-left{display:flex;align-items:center;gap:12px;}
+    .spesa-group-dot{width:14px;height:14px;border-radius:50%;flex-shrink:0;}
+    .spesa-group-title{font-weight:700;font-size:15px;color:#222;}
+    .spesa-group-sub{font-size:13px;color:#888;margin-top:2px;}
+    .spesa-arrow{font-size:16px;color:#aaa;transition:transform .2s;}
+    .spesa-arrow.open{transform:rotate(180deg);}
+    .spesa-group-actions{display:flex;align-items:center;gap:10px;}
+    .btn-remove-group{background:none;border:1px solid #ffcdd2;cursor:pointer;color:#e53935;font-size:12px;font-weight:600;font-family:inherit;padding:4px 10px;border-radius:8px;}
+    .spesa-body{display:none;border-top:1px solid #f5f5f5;}
+    .spesa-body.open{display:block;}
+    
     /* CATEGORIA COLORI */
-    .cat-section{margin-bottom:6px}
-    .cat-header{display:flex;align-items:center;gap:6px;padding:6px 14px;background:#fafafa}
-    .cat-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0}
-    .cat-label{font-size:11px;font-weight:700;color:#888;text-transform:uppercase;letter-spacing:.5px}
-    .share-row{display:flex;gap:8px;margin-bottom:12px;flex-wrap:wrap}
-    .backup-row{display:flex;gap:8px;margin-top:10px}
-    .text-mode-box{background:#f9f9f9;border-radius:8px;padding:12px;margin-top:10px;border:1.5px dashed #ddd}
+    .cat-section{margin-bottom:0;}
+    .cat-header{display:flex;align-items:center;gap:8px;padding:10px 16px;background:#fafafa;}
+    .cat-dot{width:10px;height:10px;border-radius:50%;flex-shrink:0;}
+    .cat-label{font-size:12px;font-weight:800;color:#888;text-transform:uppercase;letter-spacing:.5px;}
+    .share-row{display:flex;gap:10px;margin-bottom:16px;flex-wrap:wrap;}
+    .backup-row{display:flex;gap:10px;margin-top:14px;}
+    
     @media print {
       body{background:white}
-      #app .header,.tabs,.back,.share-row,.row.action-row,.loading-overlay{display:none!important}
+      #app .header,.bottom-nav,.fab-container,.back,.share-row,.row.action-row,.loading-overlay{display:none!important}
       .card{box-shadow:none;border:none;padding:0}
       .recipe-hero{height:150px}
       .content{padding:0}
-      #app{max-width:100%}
+      #app{max-width:100%;padding-bottom:0;}
     }
   </style>
 </head>
 <body>
 <div id="app">
-  <div class="header"><h1>🍴 MyMeal</h1><p>Il tuo ricettario smart</p></div>
-  <div class="tabs">
-    <button class="tab-btn active" onclick="nav('ricette')">🍽 Ricette</button>
-    <button class="tab-btn" onclick="nav('ricettari')">📚 Ricettari</button>
-    <button class="tab-btn" onclick="nav('spesa')">🛒 Spesa</button>
+  <div class="header">
+    <h1>🍴 MyMeal</h1>
+    <p>Il tuo ricettario smart</p>
   </div>
+  
   <div class="content" id="content"></div>
-  <div class="loading-overlay" id="loadingOverlay" style="display:none">
-    <div class="loading-spinner"></div>
-    <div class="loading-text">⏳ Elaborazione in corso...</div>
-    <div class="loading-sub" id="loadingSub">Sto analizzando la pagina</div>
+
+  <nav class="bottom-nav">
+    <button class="nav-btn" id="nav-ricette" onclick="nav('ricette')">
+      <span class="icon">🍽️</span><span>Ricette</span>
+    </button>
+    <button class="nav-btn" id="nav-ricettari" onclick="nav('ricettari')">
+      <span class="icon">📚</span><span>Ricettari</span>
+    </button>
+    <button class="nav-btn" id="nav-spesa" onclick="nav('spesa')">
+      <span class="icon">🛒</span><span>Spesa</span>
+    </button>
+  </nav>
+
+  <div class="fab-container" id="fabContainer" style="display:none;">
+    <div class="fab" onclick="openModal()">+</div>
   </div>
 </div>
+
+<div class="modal-overlay" id="importModal" style="display:none" onclick="if(event.target===this)closeModal()">
+  <div class="modal-content">
+    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:20px;">
+      <h2 style="font-size:20px; margin:0; color:#222; font-weight:800;">Aggiungi Ricetta</h2>
+      <button style="background:none; border:none; font-size:28px; color:#aaa; cursor:pointer;" onclick="closeModal()">×</button>
+    </div>
+
+    <div id="modalError" class="err" style="display:none; margin-bottom:16px;"></div>
+
+    <div style="font-weight:700;font-size:14px;margin-bottom:8px;color:#333">🔗 Importa da URL</div>
+    <div class="row" style="margin-bottom: 20px;">
+      <input id="urlInp" class="inp" placeholder="Link YouTube, sito, blog..." onkeydown="if(event.key==='Enter')importRecipe()"/>
+      <button class="btn btn-red" onclick="importRecipe()">Importa</button>
+    </div>
+
+    <div style="text-align:center; color:#ccc; font-size:12px; margin-bottom:20px; font-weight:600; text-transform:uppercase;">oppure</div>
+
+    <div style="font-weight:700;font-size:14px;margin-bottom:8px;color:#333">📋 Incolla il testo (Libero o Social)</div>
+    <textarea id="textInp" rows="4" class="inp" style="width:100%; resize:vertical; margin-bottom:12px;" placeholder="Incolla descrizione video, caption Instagram..."></textarea>
+    <button class="btn btn-blue" style="width:100%" onclick="importFromText()">🤖 Estrai con AI</button>
+  </div>
+</div>
+
+<div class="loading-overlay" id="loadingOverlay" style="display:none">
+  <div class="loading-spinner"></div>
+  <div class="loading-text">⏳ Elaborazione in corso...</div>
+  <div class="loading-sub" id="loadingSub">Sto analizzando i dati</div>
+</div>
+
 <input type="file" id="importFile" accept=".json" style="display:none" onchange="importBackup(event)"/>
+
 <script>
 const PROXY = "https://mymeal-proxy.spatum.workers.dev";
 const DEFAULT_CB = ["Colazione","Pranzo","Cena","Dolci","Altro"];
 const CB_ICONS = {Colazione:"☀️",Pranzo:"🍝",Cena:"🌙",Dolci:"🍰"};
 
-// Categorie con colori per la lista spesa
 const CATEGORIES = [
   {name:"Frutta e Verdura", color:"#4caf50", keywords:["pomodor","insalat","carota","zucchina","melanzana","peperone","cipolla","aglio","fungo","spinac","broccol","cavolfi","sedano","finocc","patata","pisell","fagiol","lenticch","cece","mais","mela","pera","banana","arancia","limone","fragola","uva","pesca","albicocc","ciliegi","anguria","melone","kiwi","avocado","verdura","frutta","erba","prezzemol","basilico","rosmarino","timo","salvia","menta","origano"]},
   {name:"Carne e Pesce", color:"#f44336", keywords:["manzo","vitello","maiale","pollo","tacchino","agnello","coniglio","salsiccia","pancetta","guanciale","bacon","prosciutto","mortadella","salame","carne","pesce","salmone","tonno","merluzzo","gambero","calamaro","polpo","cozza","vongola","aragosta","branzino","orata","acciuga","sardina","baccalà"]},
@@ -142,7 +214,7 @@ let S = {
   tab:"ricette", recipes:[], cookbooks:[...DEFAULT_CB], shopping:[],
   selected:null, filter:"Tutti", search:"", loading:false, error:"",
   addingToList:false, showAddCb:false, editingNote:false, noteText:"",
-  showTextMode:false, openGroups:{}
+  openGroups:{}
 };
 
 function load(){
@@ -173,7 +245,17 @@ function showLoading(show,msg){
   if(msg) document.getElementById("loadingSub").textContent=msg;
 }
 
-// ---- FUNZIONE CORRETTA SENZA ERRORI DI SINTASSI ----
+function openModal() {
+  document.getElementById('importModal').style.display = 'flex';
+  document.getElementById('modalError').style.display = 'none';
+}
+
+function closeModal() {
+  document.getElementById('importModal').style.display = 'none';
+  document.getElementById('urlInp').value = "";
+  document.getElementById('textInp').value = "";
+}
+
 async function callClaude(prompt){
   const res=await fetch("https://mymeal-api.spatum.workers.dev",{
     method:"POST",headers:{"Content-Type":"application/json"},
@@ -189,21 +271,20 @@ async function fetchPage(url){
   return await res.json();
 }
 
-function isYouTube(url){ return url.includes("youtube.com")||url.includes("youtu.be"); }
-
 async function importRecipe(){
   const urlInp=document.getElementById("urlInp");
   if(!urlInp) return;
   const url=urlInp.value.trim();
   if(!url) return;
-  S.loading=true; S.error=""; S.showTextMode=false;
-  showLoading(true,"Sto analizzando la pagina..."); render();
+  
+  document.getElementById('modalError').style.display = 'none';
+  S.loading=true;
+  showLoading(true,"Sto analizzando la pagina..."); 
+  
   try {
     const page=await fetchPage(url);
     if(!page.title&&!page.description&&!page.rawSnippet){
-      S.loading=false; showLoading(false);
-      S.showTextMode=true; S.error="";
-      render(); return;
+      throw new Error("Contenuto non trovato");
     }
     const context=[
       page.title?"Titolo: "+page.title:"",
@@ -211,6 +292,7 @@ async function importRecipe(){
       page.rawSnippet?"Testo: "+page.rawSnippet:"",
       "URL: "+url
     ].filter(Boolean).join("\n");
+    
     showLoading(true,"L'AI sta estraendo la ricetta...");
     const json=await callClaude(
       "Analizza questo contenuto e ricava la ricetta.\n"+context+
@@ -223,18 +305,24 @@ async function importRecipe(){
     r.notaPersonale="";
     S.recipes.unshift(r); save();
     S.selected=r; S.editingNote=false;
-    urlInp.value="";
+    
+    closeModal();
   } catch(e){
-    S.error="Impossibile estrarre la ricetta. Prova ad incollare il testo qui sotto.";
-    S.showTextMode=true;
+    document.getElementById('modalError').textContent="Impossibile estrarre la ricetta. Prova ad incollare il testo libero.";
+    document.getElementById('modalError').style.display = 'block';
   }
   S.loading=false; showLoading(false); render();
 }
 
 async function importFromText(){
-  const txt=document.getElementById("textInp")?.value.trim();
+  const txtInp=document.getElementById("textInp");
+  const txt=txtInp?.value.trim();
   if(!txt) return;
-  S.loading=true; showLoading(true,"L'AI sta elaborando il testo..."); render();
+  
+  document.getElementById('modalError').style.display = 'none';
+  S.loading=true; 
+  showLoading(true,"L'AI sta elaborando il testo...");
+  
   try {
     const json=await callClaude(
       "Estrai la ricetta da questo testo.\n"+txt+
@@ -246,8 +334,13 @@ async function importFromText(){
     r.ricettario="Altro"; r.dataAggiunta=new Date().toLocaleDateString("it-IT");
     r.notaPersonale="";
     S.recipes.unshift(r); save();
-    S.selected=r; S.editingNote=false; S.showTextMode=false;
-  } catch(e){ S.error="Impossibile elaborare il testo. Riprova."; }
+    S.selected=r; S.editingNote=false;
+    
+    closeModal();
+  } catch(e){ 
+    document.getElementById('modalError').textContent="Impossibile elaborare il testo. Assicurati che contenga una ricetta.";
+    document.getElementById('modalError').style.display = 'block';
+  }
   S.loading=false; showLoading(false); render();
 }
 
@@ -257,13 +350,12 @@ async function addToShopping(){
     const r=S.selected;
     const existing=S.shopping.find(g=>g.groupId===String(r.id));
     if(existing){ alert("Questa ricetta è già nella lista della spesa!"); S.addingToList=false; render(); return; }
-    // Categorizza automaticamente ogni ingrediente
     const items=r.ingredienti.map(nome=>({nome,categoria:categorize(nome),checked:false}));
     const group={groupId:String(r.id),titolo:r.titolo,items};
     S.shopping.push(group);
-    S.openGroups[String(r.id)]=true; // apri il gruppo appena aggiunto
+    S.openGroups[String(r.id)]=true;
     save(); S.selected=null; nav("spesa");
-  } catch(e){ S.error="Errore aggiunta alla spesa."; }
+  } catch(e){ alert("Errore aggiunta alla spesa."); }
   S.addingToList=false; render();
 }
 
@@ -278,34 +370,11 @@ function addManualItem(){
   save(); inp.value=""; render();
 }
 
-function toggleGroup(gid){
-  S.openGroups[gid]=!S.openGroups[gid];
-  save(); render();
-}
-
-function toggleItem(gid,idx){
-  const g=S.shopping.find(x=>x.groupId===gid);
-  if(g) g.items[idx].checked=!g.items[idx].checked;
-  save(); render();
-}
-
-function removeItem(gid,idx){
-  const g=S.shopping.find(x=>x.groupId===gid);
-  if(g){ g.items.splice(idx,1); if(!g.items.length){ S.shopping=S.shopping.filter(x=>x.groupId!==gid); delete S.openGroups[gid]; } }
-  save(); render();
-}
-
-function removeGroup(gid){
-  if(!confirm("Rimuovere questo gruppo dalla lista?")) return;
-  S.shopping=S.shopping.filter(g=>g.groupId!==gid);
-  delete S.openGroups[gid];
-  save(); render();
-}
-
-function clearCheckedAll(){
-  S.shopping=S.shopping.map(g=>({...g,items:g.items.filter(i=>!i.checked)})).filter(g=>g.items.length>0);
-  save(); render();
-}
+function toggleGroup(gid){ S.openGroups[gid]=!S.openGroups[gid]; save(); render(); }
+function toggleItem(gid,idx){ const g=S.shopping.find(x=>x.groupId===gid); if(g) g.items[idx].checked=!g.items[idx].checked; save(); render(); }
+function removeItem(gid,idx){ const g=S.shopping.find(x=>x.groupId===gid); if(g){ g.items.splice(idx,1); if(!g.items.length){ S.shopping=S.shopping.filter(x=>x.groupId!==gid); delete S.openGroups[gid]; } } save(); render(); }
+function removeGroup(gid){ if(!confirm("Rimuovere questo gruppo dalla lista?")) return; S.shopping=S.shopping.filter(g=>g.groupId!==gid); delete S.openGroups[gid]; save(); render(); }
+function clearCheckedAll(){ S.shopping=S.shopping.map(g=>({...g,items:g.items.filter(i=>!i.checked)})).filter(g=>g.items.length>0); save(); render(); }
 
 function saveNote(){
   S.recipes=S.recipes.map(r=>r.id===S.selected.id?{...r,notaPersonale:S.noteText}:r);
@@ -313,7 +382,7 @@ function saveNote(){
   save(); S.editingNote=false; render();
 }
 
-// ── CONDIVISIONE ─────────────────────────────────────────────
+// ── CONDIVISIONE E BACKUP ─────────────────────────────────────────────
 function recipeToText(r){
   let t="🍴 "+r.titolo+"\n";
   if(r.tempoPreparazione) t+="⏱ "+r.tempoPreparazione;
@@ -331,15 +400,8 @@ function shareWhatsApp(){ window.open("https://wa.me/?text="+encodeURIComponent(
 function shareEmail(){ window.open("mailto:?subject="+encodeURIComponent("Ricetta: "+S.selected.titolo)+"&body="+encodeURIComponent(recipeToText(S.selected))); }
 function printRecipe(){ window.print(); }
 
-// ── BACKUP E RESTORE ─────────────────────────────────────────
 function exportBackup(){
-  const data={
-    version:2,
-    exportedAt:new Date().toISOString(),
-    recipes:S.recipes,
-    cookbooks:S.cookbooks,
-    shopping:S.shopping
-  };
+  const data={ version:2, exportedAt:new Date().toISOString(), recipes:S.recipes, cookbooks:S.cookbooks, shopping:S.shopping };
   const blob=new Blob([JSON.stringify(data,null,2)],{type:"application/json"});
   const a=document.createElement("a");
   a.href=URL.createObjectURL(blob);
@@ -357,24 +419,29 @@ function importBackup(e){
       const data=JSON.parse(ev.target.result);
       if(!data.recipes||!Array.isArray(data.recipes)) throw new Error("File non valido");
       if(!confirm("⚠️ Vuoi ripristinare il backup?\n\nLe ricette attuali verranno sostituite con quelle del backup.\n\nProcedere?")) return;
-      S.recipes=data.recipes||[];
-      S.cookbooks=data.cookbooks||[...DEFAULT_CB];
-      S.shopping=data.shopping||[];
-      S.openGroups={};
-      save(); render();
-      alert("✅ Backup ripristinato!\n"+S.recipes.length+" ricette caricate.");
+      S.recipes=data.recipes||[]; S.cookbooks=data.cookbooks||[...DEFAULT_CB]; S.shopping=data.shopping||[]; S.openGroups={};
+      save(); render(); alert("✅ Backup ripristinato!\n"+S.recipes.length+" ricette caricate.");
     } catch(err){ alert("❌ File non valido.\nAssicurati di usare un file di backup MyMeal."); }
   };
-  reader.readAsText(file);
-  e.target.value="";
+  reader.readAsText(file); e.target.value="";
 }
 
-function nav(t){ S.tab=t; S.selected=null; S.error=""; S.editingNote=false; S.showTextMode=false; render(); }
+function nav(t){ S.tab=t; S.selected=null; S.error=""; S.editingNote=false; render(); }
 
 function render(){
-  document.querySelectorAll(".tab-btn").forEach((b,i)=>{
+  // Aggiorna Bottom Navigation
+  document.querySelectorAll(".nav-btn").forEach((b,i)=>{
     b.classList.toggle("active",["ricette","ricettari","spesa"][i]===S.tab);
   });
+  
+  // Mostra/Nascondi FAB solo nel tab ricette principale
+  const fab = document.getElementById("fabContainer");
+  if(S.tab === "ricette" && !S.selected) {
+    fab.style.display = "block";
+  } else {
+    fab.style.display = "none";
+  }
+
   const c=document.getElementById("content");
   if(S.tab==="ricette") c.innerHTML=S.selected?detailHTML():listHTML();
   if(S.tab==="ricettari") c.innerHTML=cbHTML();
@@ -390,21 +457,13 @@ function listHTML(){
       (r.notaPersonale&&r.notaPersonale.toLowerCase().includes(q));
     return mc&&ms;
   });
+  
   const chips=["Tutti",...S.cookbooks].map(c=>
     `<button class="chip ${S.filter===c?'on':'off'}" onclick="S.filter='${c}';render()">${c}</button>`
   ).join("");
-  const textBox=S.showTextMode?`
-    <div class="text-mode-box">
-      <div style="font-size:13px;font-weight:700;color:#555;margin-bottom:8px">📋 Incolla qui il testo della ricetta</div>
-      <textarea id="textInp" rows="6" style="width:100%;padding:10px;border:1.5px solid #ddd;border-radius:8px;font-size:13px;outline:none;resize:vertical;font-family:inherit"
-        placeholder="Incolla la descrizione del video, la caption Instagram, o il testo della ricetta..."></textarea>
-      <div class="row" style="margin-top:8px">
-        <button class="btn btn-red" style="flex:1;padding:10px 0" onclick="importFromText()">🤖 Estrai ricetta</button>
-        <button class="btn" style="background:#eee;color:#666;padding:10px 16px" onclick="S.showTextMode=false;render()">✕</button>
-      </div>
-    </div>`:"";
+  
   const list=filtered.length===0
-    ?`<div class="empty"><div class="ico">🍳</div><div>${S.search?'Nessun risultato per "'+S.search+'"':"Nessuna ricetta ancora.\nIncolla un URL per iniziare!"}</div></div>`
+    ?`<div class="empty"><div class="ico">🍳</div><div style="font-size:16px;color:#888;font-weight:500">${S.search?'Nessun risultato per "'+S.search+'"':"Nessuna ricetta.<br>Tocca il tasto + per iniziare!"}</div></div>`
     :filtered.map(r=>`
       <div class="recipe-card" onclick="S.selected=S.recipes.find(x=>x.id===${r.id});S.noteText=S.selected.notaPersonale||'';S.editingNote=false;render()">
         ${r.image?`<img class="recipe-card-img" src="${r.image}" alt="${r.titolo}" onerror="this.style.display='none'">`:""}
@@ -412,36 +471,21 @@ function listHTML(){
           <h3>${r.titolo}</h3>
           <div class="meta">
             ${r.tempoPreparazione?`<span>⏱ ${r.tempoPreparazione}</span>`:""}
-            ${r.porzioni?`<span>👥 ${r.porzioni} porz.</span>`:""}
+            ${r.porzioni?`<span>👥 ${r.porzioni}</span>`:""}
             <span>📚 ${r.ricettario}</span>
-            ${r.notaPersonale?`<span>📝 Nota</span>`:""}
-            <span style="margin-left:auto">📅 ${r.dataAggiunta}</span>
           </div>
         </div>
       </div>`).join("");
+      
   return `
-    <div class="card">
-      <div style="font-weight:700;font-size:15px;margin-bottom:10px;color:#333">📥 Importa da URL</div>
-      <div class="row">
-        <input id="urlInp" class="inp" placeholder="Incolla link YouTube, sito ricette..."
-          onkeydown="if(event.key==='Enter')importRecipe()"/>
-        <button class="btn btn-red" onclick="importRecipe()" ${S.loading?"disabled":""}>
-          ${S.loading?"⏳":"Importa"}
-        </button>
-      </div>
-      ${S.error?`<div class="err">${S.error}</div>`:""}
-      ${textBox}
-      <div style="font-size:12px;color:#bbb;margin-top:10px;text-align:center">
-        oppure <button style="background:none;border:none;color:#e8472a;cursor:pointer;font-size:12px;font-weight:600;font-family:inherit" onclick="S.showTextMode=!S.showTextMode;render()">incolla il testo della ricetta</button>
-      </div>
-    </div>
-    <div style="margin-bottom:12px">
-      <input class="inp" style="width:100%;padding:10px 14px;border-radius:10px"
-        placeholder="🔍 Cerca per titolo, ingrediente o nota..."
+    <div style="margin-bottom:16px">
+      <input class="inp" style="width:100%;padding:14px 18px;border-radius:18px;box-shadow:0 4px 12px rgba(0,0,0,.03);border:none;background:white;"
+        placeholder="🔍 Cerca ricetta o ingrediente..."
         value="${S.search}" oninput="S.search=this.value;render()"/>
     </div>
     <div class="chip-row">${chips}</div>
-    ${list}`;
+    ${list}
+  `;
 }
 
 function detailHTML(){
@@ -451,48 +495,48 @@ function detailHTML(){
   const steps=(r.istruzioni||[]).map((s,i)=>`
     <div class="step">
       <div class="step-num">${i+1}</div>
-      <div style="font-size:14px;color:#444;line-height:1.5">${s}</div>
+      <div style="font-size:15px;color:#444;line-height:1.5">${s}</div>
     </div>`).join("");
   const noteSection=S.editingNote
-    ?`<textarea id="noteTa" rows="4" style="width:100%;padding:10px 12px;border:1.5px solid #e8472a;border-radius:8px;font-size:14px;outline:none;resize:vertical;line-height:1.5;font-family:inherit"
+    ?`<textarea id="noteTa" rows="4" class="inp" style="width:100%;resize:vertical;line-height:1.5;margin-bottom:12px;"
         placeholder="Scrivi varianti, consigli, modifiche...">${S.noteText}</textarea>
-       <div class="row" style="margin-top:8px">
-         <button class="btn btn-red" style="flex:1;padding:10px 0" onclick="S.noteText=document.getElementById('noteTa').value;saveNote()">💾 Salva nota</button>
-         <button class="btn" style="background:#f5f5f5;color:#666;padding:10px 16px" onclick="S.editingNote=false;render()">Annulla</button>
+       <div class="row">
+         <button class="btn btn-red" style="flex:1;" onclick="S.noteText=document.getElementById('noteTa').value;saveNote()">💾 Salva nota</button>
+         <button class="btn" style="background:#f5f5f5;color:#666;" onclick="S.editingNote=false;render()">Annulla</button>
        </div>`
     :r.notaPersonale
       ?`<div class="note-personal">${r.notaPersonale}</div>`
-      :`<div style="font-size:13px;color:#bbb;font-style:italic">Nessuna nota. Premi "+ Aggiungi".</div>`;
+      :`<div style="font-size:14px;color:#bbb;font-style:italic">Nessuna nota. Premi "+ Aggiungi".</div>`;
   const inSpesa=S.shopping.find(g=>g.groupId===String(r.id));
   return `
-    <button class="back" onclick="S.selected=null;S.editingNote=false;render()">← Torna alle ricette</button>
-    <div class="card">
+    <button class="back" onclick="S.selected=null;S.editingNote=false;render()"><span>←</span> Torna alle ricette</button>
+    <div class="card" style="padding:16px;">
       ${r.image?`<img class="recipe-hero" src="${r.image}" alt="${r.titolo}" onerror="this.style.display='none'">`:""}
-      <div style="font-weight:800;font-size:20px;color:#222;margin-bottom:8px">${r.titolo}</div>
-      <div class="meta" style="margin-bottom:12px">
+      <div style="font-weight:800;font-size:22px;color:#222;margin-bottom:10px;line-height:1.2;">${r.titolo}</div>
+      <div class="meta" style="margin-bottom:16px; font-size:14px;">
         ${r.tempoPreparazione?`<span>⏱ ${r.tempoPreparazione}</span>`:""}
         ${r.porzioni?`<span>👥 ${r.porzioni} porzioni</span>`:""}
       </div>
       <div class="share-row">
-        <button class="btn btn-wa" style="flex:1;padding:9px 0;font-size:13px" onclick="shareWhatsApp()">💬 WhatsApp</button>
-        <button class="btn btn-blue" style="flex:1;padding:9px 0;font-size:13px" onclick="shareEmail()">✉️ Email</button>
-        <button class="btn" style="flex:1;padding:9px 0;font-size:13px;background:#f5f5f5;color:#555;border:1.5px solid #ddd" onclick="printRecipe()">🖨️ Stampa</button>
+        <button class="btn btn-wa" style="flex:1;padding:10px 0;font-size:14px" onclick="shareWhatsApp()">💬 WhatsApp</button>
+        <button class="btn btn-blue" style="flex:1;padding:10px 0;font-size:14px" onclick="shareEmail()">✉️ Email</button>
+        <button class="btn" style="flex:1;padding:10px 0;font-size:14px;background:#f5f5f5;color:#555;border:1.5px solid #eaeaea" onclick="printRecipe()">🖨️ Stampa</button>
       </div>
-      <div style="margin-bottom:16px">
+      <div style="margin-bottom:20px">
         <label class="lbl">📚 Ricettario</label>
         <select class="sel" onchange="S.recipes=S.recipes.map(x=>x.id===${r.id}?{...x,ricettario:this.value}:x);S.selected={...S.selected,ricettario:this.value};save();render()">${opts}</select>
       </div>
-      <div style="margin-bottom:16px"><div class="sec-title">🧂 Ingredienti</div>${ings}</div>
-      <div style="margin-bottom:16px"><div class="sec-title">📋 Preparazione</div>${steps}</div>
+      <div style="margin-bottom:20px"><div class="sec-title">🧂 Ingredienti</div>${ings}</div>
+      <div style="margin-bottom:20px"><div class="sec-title">📋 Preparazione</div>${steps}</div>
       ${r.note?`<div class="note-ai">📝 ${r.note}</div>`:""}
-      <div style="margin-bottom:16px">
-        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px">
+      <div style="margin-bottom:20px">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px">
           <div class="sec-title" style="margin:0">✏️ Note personali</div>
           ${!S.editingNote?`<button class="btn-sm" onclick="S.noteText='${(r.notaPersonale||"").replace(/'/g,"\\'")}';S.editingNote=true;render()">${r.notaPersonale?"Modifica":"+ Aggiungi"}</button>`:""}
         </div>
         ${noteSection}
       </div>
-      ${r.url?`<div style="font-size:12px;color:#aaa;margin-bottom:16px;word-break:break-all">🔗 ${r.url}</div>`:""}
+      ${r.url?`<div style="font-size:13px;color:#aaa;margin-bottom:20px;word-break:break-all">🔗 ${r.url}</div>`:""}
       <div class="row action-row">
         <button class="btn btn-green" onclick="addToShopping()" ${S.addingToList||inSpesa?"disabled":""}>
           ${inSpesa?"✅ Già in lista":"🛒 Aggiungi alla spesa"}
@@ -510,43 +554,39 @@ function cbHTML(){
   const list=S.cookbooks.map(name=>{
     const count=S.recipes.filter(r=>r.ricettario===name).length;
     const del=!DEFAULT_CB.includes(name)
-      ?`<button onclick="event.stopPropagation();S.cookbooks=S.cookbooks.filter(c=>c!=='${name}');save();render()" style="background:none;border:none;cursor:pointer;color:#ccc;font-size:18px">×</button>`:"";
-    return `<div class="card" style="cursor:pointer;display:flex;align-items:center;justify-content:space-between" onclick="S.filter='${name}';nav('ricette')">
+      ?`<button onclick="event.stopPropagation();S.cookbooks=S.cookbooks.filter(c=>c!=='${name}');save();render()" style="background:none;border:none;cursor:pointer;color:#ccc;font-size:24px;padding:0 8px;">×</button>`:"";
+    return `<div class="card" style="cursor:pointer;display:flex;align-items:center;justify-content:space-between;padding:16px 20px;" onclick="S.filter='${name}';nav('ricette')">
       <div>
-        <div style="font-weight:700;font-size:15px;color:#222">${CB_ICONS[name]||"📁"} ${name}</div>
-        <div style="font-size:13px;color:#888;margin-top:2px">${count} ricett${count===1?"a":"e"}</div>
+        <div style="font-weight:700;font-size:16px;color:#222">${CB_ICONS[name]||"📁"} ${name}</div>
+        <div style="font-size:13px;color:#888;margin-top:4px">${count} ricett${count===1?"a":"e"}</div>
       </div>
-      <div style="display:flex;align-items:center;gap:8px"><div class="badge">${count}</div>${del}</div>
+      <div style="display:flex;align-items:center;gap:12px"><div class="badge">${count}</div>${del}</div>
     </div>`;
   }).join("");
   const tot=S.shopping.reduce((a,g)=>a+g.items.length,0);
   return `
-    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px">
-      <div style="font-weight:700;font-size:16px">I tuoi ricettari</div>
-      <button class="btn btn-red" style="padding:8px 14px;font-size:13px" onclick="S.showAddCb=!S.showAddCb;render()">+ Nuovo</button>
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;padding:0 4px;">
+      <div style="font-weight:800;font-size:18px;color:#222;">I tuoi ricettari</div>
+      <button class="btn btn-red" style="padding:10px 16px;font-size:14px;" onclick="S.showAddCb=!S.showAddCb;render()">+ Nuovo</button>
     </div>
     ${form}${list}
-    <div class="card" style="margin-top:8px">
-      <div style="font-weight:700;font-size:15px;margin-bottom:4px;color:#333">💾 Backup e Ripristino</div>
-      <div style="font-size:13px;color:#888;margin-bottom:14px">
-        ${S.recipes.length} ricette salvate · ${tot} articoli in lista spesa
+    <div class="card" style="margin-top:16px;padding:20px;">
+      <div style="font-weight:800;font-size:17px;margin-bottom:6px;color:#222">💾 Backup e Ripristino</div>
+      <div style="font-size:14px;color:#888;margin-bottom:16px">
+        ${S.recipes.length} ricette salvate · ${tot} articoli in spesa
       </div>
-      <div style="font-size:13px;color:#555;margin-bottom:10px;line-height:1.5">
-        📤 <strong>Esporta</strong>: scarica un file .json con tutte le tue ricette<br>
-        📥 <strong>Importa</strong>: ripristina le ricette da un backup precedente
+      <div style="font-size:14px;color:#555;margin-bottom:16px;line-height:1.6">
+        📤 <strong>Esporta</strong>: scarica un file con le tue ricette<br>
+        📥 <strong>Importa</strong>: ripristina un backup precedente
       </div>
       <div class="backup-row">
-        <button class="btn btn-blue" style="flex:1;padding:11px 0;font-size:14px" onclick="exportBackup()">📤 Esporta backup</button>
-        <button class="btn" style="flex:1;padding:11px 0;font-size:14px;background:#f0f7ff;color:#2196f3;border:1.5px solid #2196f3" onclick="document.getElementById('importFile').click()">📥 Importa backup</button>
+        <button class="btn btn-blue" style="flex:1;padding:12px 0;font-size:14px" onclick="exportBackup()">📤 Esporta</button>
+        <button class="btn" style="flex:1;padding:12px 0;font-size:14px;background:#f0f7ff;color:#2196f3;border:1.5px solid #2196f3" onclick="document.getElementById('importFile').click()">📥 Importa</button>
       </div>
     </div>`;
 }
 
-function addCb(){
-  const v=document.getElementById("cbInp")?.value.trim();
-  if(!v||S.cookbooks.includes(v)) return;
-  S.cookbooks.push(v); S.showAddCb=false; save(); render();
-}
+function addCb(){ const v=document.getElementById("cbInp")?.value.trim(); if(!v||S.cookbooks.includes(v)) return; S.cookbooks.push(v); S.showAddCb=false; save(); render(); }
 
 function shoppingHTML(){
   const hasChecked=S.shopping.some(g=>g.items.some(i=>i.checked));
@@ -554,7 +594,6 @@ function shoppingHTML(){
     const isOpen=!!S.openGroups[g.groupId];
     const done=g.items.filter(i=>i.checked).length;
     const total=g.items.length;
-    // raggruppa per categoria
     const byCat={};
     g.items.forEach((item,idx)=>{
       const cat=item.categoria||categorize(item.nome);
@@ -564,12 +603,12 @@ function shoppingHTML(){
     const catSections=Object.entries(byCat).map(([cat,items])=>{
       const color=getCatColor(cat);
       const rows=items.map(item=>`
-        <div style="display:flex;align-items:center;padding:10px 14px 10px 28px;border-bottom:1px solid #f8f8f8;opacity:${item.checked?.5:1}">
+        <div style="display:flex;align-items:center;padding:12px 16px 12px 28px;border-bottom:1px solid #f8f8f8;opacity:${item.checked?.5:1}">
           <div class="check-box ${item.checked?"on":""}" onclick="toggleItem('${g.groupId}',${item.idx})">
-            ${item.checked?'<span style="color:white;font-size:12px">✓</span>':""}
+            ${item.checked?'<span style="color:white;font-size:14px;font-weight:bold;">✓</span>':""}
           </div>
-          <div style="flex:1;font-size:14px;color:#333;margin-left:10px;text-decoration:${item.checked?"line-through":"none"}">${item.nome}</div>
-          <button onclick="removeItem('${g.groupId}',${item.idx})" style="background:none;border:none;cursor:pointer;color:#ddd;font-size:16px;padding:0 4px">×</button>
+          <div style="flex:1;font-size:15px;color:#333;margin-left:14px;text-decoration:${item.checked?"line-through":"none"}">${item.nome}</div>
+          <button onclick="removeItem('${g.groupId}',${item.idx})" style="background:none;border:none;cursor:pointer;color:#ddd;font-size:20px;padding:0 8px;">×</button>
         </div>`).join("");
       return `<div class="cat-section">
         <div class="cat-header">
@@ -579,7 +618,6 @@ function shoppingHTML(){
         ${rows}
       </div>`;
     }).join("");
-    // colore pallino gruppo = prima categoria presente
     const firstCat=Object.keys(byCat)[0]||"Altro";
     const groupColor=g.groupId==="manuale"?"#607d8b":getCatColor(firstCat);
     return `<div class="spesa-group">
@@ -587,7 +625,7 @@ function shoppingHTML(){
         <div class="spesa-group-left">
           <div class="spesa-group-dot" style="background:${groupColor}"></div>
           <div>
-            <div class="spesa-group-title">${g.groupId==="manuale"?"📝":"🍽"} ${g.titolo}</div>
+            <div class="spesa-group-title">${g.groupId==="manuale"?"📝":"🍽️"} ${g.titolo}</div>
             <div class="spesa-group-sub">${done}/${total} articoli${done===total&&total>0?" · ✅ Completata":""}</div>
           </div>
         </div>
@@ -602,20 +640,20 @@ function shoppingHTML(){
     </div>`;
   }).join("");
   return `
-    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px">
-      <div style="font-weight:700;font-size:16px">🛒 Lista della spesa</div>
-      ${hasChecked?`<button class="btn" style="padding:8px 14px;background:#f44336;color:white;font-size:13px" onclick="clearCheckedAll()">🗑 Rimuovi spuntati</button>`:""}
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;padding:0 4px;">
+      <div style="font-weight:800;font-size:18px;color:#222;">🛒 La tua spesa</div>
+      ${hasChecked?`<button class="btn" style="padding:8px 14px;background:#f44336;color:white;font-size:13px;box-shadow:0 2px 8px rgba(244,67,54,0.3);" onclick="clearCheckedAll()">🗑 Rimuovi spuntati</button>`:""}
     </div>
-    <div class="card" style="margin-bottom:16px">
+    <div class="card" style="margin-bottom:20px;padding:16px;">
       <div style="font-weight:700;font-size:14px;margin-bottom:10px;color:#333">➕ Aggiungi articolo manuale</div>
       <div class="row">
-        <input id="manualInp" class="inp" placeholder="Es. Acqua minerale, Pane..."
+        <input id="manualInp" class="inp" placeholder="Es. Acqua, Pane, Latte..."
           onkeydown="if(event.key==='Enter')addManualItem()"/>
-        <button class="btn btn-red" onclick="addManualItem()">Aggiungi</button>
+        <button class="btn btn-red" onclick="addManualItem()">Add</button>
       </div>
     </div>
     ${S.shopping.length===0
-      ?`<div class="empty"><div class="ico">🛒</div><div>La lista è vuota.<br>Aggiungi ingredienti da una ricetta!</div></div>`
+      ?`<div class="empty"><div class="ico">🛒</div><div style="font-size:16px;color:#888;font-weight:500;">La lista è vuota.<br>Aggiungi ingredienti da una ricetta!</div></div>`
       :groups}`;
 }
 

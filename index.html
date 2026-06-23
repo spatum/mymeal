@@ -485,21 +485,21 @@ function render(){
 
 function updateSearch(val) {
   S.search = val;
-  const filtered=S.recipes.filter(r=>{
-    const mc=S.filter==="Tutti"||r.ricettario===S.filter;
-    
-    // Dividiamo la ricerca in parole singole usando gli spazi
+  const filtered = S.recipes.filter(r => {
+    const mc = S.filter === "Tutti" || r.ricettario === S.filter;
     const terms = S.search.toLowerCase().trim().split(/\s+/);
     
-    // Verifichiamo che OGNI parola digitata sia presente da qualche parte
-    const ms = terms.every(term => 
-      !term || 
-      (r.titolo && r.titolo.toLowerCase().includes(term)) ||
-      (r.ingredienti && r.ingredienti.some(i => i.toLowerCase().includes(term))) ||
-      (r.notaPersonale && r.notaPersonale.toLowerCase().includes(term))
-    );
+    const ms = terms.every(t => {
+      if (!t) return true;
+      // Trucco: rimuove l'ultima vocale per far coincidere singolari e plurali (es. peperone -> peperon)
+      const term = t.length > 3 ? t.replace(/[aeiou]$/i, '') : t;
+      
+      return (r.titolo && r.titolo.toLowerCase().includes(term)) ||
+             (r.ingredienti && r.ingredienti.some(i => i.toLowerCase().includes(term))) ||
+             (r.notaPersonale && r.notaPersonale.toLowerCase().includes(term));
+    });
     
-    return mc&&ms;
+    return mc && ms;
   });
   
   const listContainer = document.querySelector(".content");
@@ -528,21 +528,21 @@ function updateSearch(val) {
 }
 
 function listHTML(){
-  const filtered=S.recipes.filter(r=>{
-    const mc=S.filter==="Tutti"||r.ricettario===S.filter;
-    
-    // Dividiamo la ricerca in parole singole usando gli spazi
+  const filtered = S.recipes.filter(r => {
+    const mc = S.filter === "Tutti" || r.ricettario === S.filter;
     const terms = S.search.toLowerCase().trim().split(/\s+/);
     
-    // Verifichiamo che OGNI parola digitata sia presente da qualche parte
-    const ms = terms.every(term => 
-      !term || 
-      (r.titolo && r.titolo.toLowerCase().includes(term)) ||
-      (r.ingredienti && r.ingredienti.some(i => i.toLowerCase().includes(term))) ||
-      (r.notaPersonale && r.notaPersonale.toLowerCase().includes(term))
-    );
+    const ms = terms.every(t => {
+      if (!t) return true;
+      // Trucco: rimuove l'ultima vocale per far coincidere singolari e plurali (es. peperone -> peperon)
+      const term = t.length > 3 ? t.replace(/[aeiou]$/i, '') : t;
+      
+      return (r.titolo && r.titolo.toLowerCase().includes(term)) ||
+             (r.ingredienti && r.ingredienti.some(i => i.toLowerCase().includes(term))) ||
+             (r.notaPersonale && r.notaPersonale.toLowerCase().includes(term));
+    });
     
-    return mc&&ms;
+    return mc && ms;
   });
   
   const chips=["Tutti",...S.cookbooks].map(c=>

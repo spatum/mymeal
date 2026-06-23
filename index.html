@@ -487,13 +487,22 @@ function updateSearch(val) {
   S.search = val;
   const filtered = S.recipes.filter(r => {
     const mc = S.filter === "Tutti" || r.ricettario === S.filter;
-    const terms = S.search.toLowerCase().trim().split(/\s+/);
     
-    const ms = terms.every(t => {
-      if (!t) return true;
-      // Trucco: rimuove l'ultima vocale per far coincidere singolari e plurali (es. peperone -> peperon)
-      const term = t.length > 3 ? t.replace(/[aeiou]$/i, '') : t;
+    // 1. Pulizia: rimuove virgole, punti e isola solo le parole vere (ignora "e", "con", ecc.)
+    const cleanTerms = S.search.toLowerCase()
+      .replace(/[,;.\-]/g, ' ')
+      .trim()
+      .split(/\s+/)
+      .filter(t => t && !["e", "ed", "con", "di", "o", "il", "la", "i", "le"].includes(t));
       
+    // Se la barra di ricerca è vuota, mostra tutto
+    if (cleanTerms.length === 0) return mc; 
+
+    // 2. Controllo incrociato
+    // TRUCCO: Cambia la parola "every" con "some" se vuoi che la ricerca trovi 
+    // le ricette che contengono "O uno O l'altro" invece di "SIA uno SIA l'altro"
+    const ms = cleanTerms.every(t => { 
+      const term = t.length > 3 ? t.replace(/[aeiou]$/i, '') : t;
       return (r.titolo && r.titolo.toLowerCase().includes(term)) ||
              (r.ingredienti && r.ingredienti.some(i => i.toLowerCase().includes(term))) ||
              (r.notaPersonale && r.notaPersonale.toLowerCase().includes(term));
@@ -530,13 +539,22 @@ function updateSearch(val) {
 function listHTML(){
   const filtered = S.recipes.filter(r => {
     const mc = S.filter === "Tutti" || r.ricettario === S.filter;
-    const terms = S.search.toLowerCase().trim().split(/\s+/);
     
-    const ms = terms.every(t => {
-      if (!t) return true;
-      // Trucco: rimuove l'ultima vocale per far coincidere singolari e plurali (es. peperone -> peperon)
-      const term = t.length > 3 ? t.replace(/[aeiou]$/i, '') : t;
+    // 1. Pulizia: rimuove virgole, punti e isola solo le parole vere (ignora "e", "con", ecc.)
+    const cleanTerms = S.search.toLowerCase()
+      .replace(/[,;.\-]/g, ' ')
+      .trim()
+      .split(/\s+/)
+      .filter(t => t && !["e", "ed", "con", "di", "o", "il", "la", "i", "le"].includes(t));
       
+    // Se la barra di ricerca è vuota, mostra tutto
+    if (cleanTerms.length === 0) return mc; 
+
+    // 2. Controllo incrociato
+    // TRUCCO: Cambia la parola "every" con "some" se vuoi che la ricerca trovi 
+    // le ricette che contengono "O uno O l'altro" invece di "SIA uno SIA l'altro"
+    const ms = cleanTerms.every(t => { 
+      const term = t.length > 3 ? t.replace(/[aeiou]$/i, '') : t;
       return (r.titolo && r.titolo.toLowerCase().includes(term)) ||
              (r.ingredienti && r.ingredienti.some(i => i.toLowerCase().includes(term))) ||
              (r.notaPersonale && r.notaPersonale.toLowerCase().includes(term));

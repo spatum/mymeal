@@ -12,16 +12,14 @@
   <style>
     *{box-sizing:border-box;margin:0;padding:0; -webkit-tap-highlight-color: transparent;}
     body{font-family:'Segoe UI',system-ui,sans-serif;background:#f5f5f3;min-height:100vh;}
-    #app{max-width:480px;margin:0 auto;position:relative;padding-bottom:90px;} /* Spazio per la bottom nav */
+    #app{max-width:480px;margin:0 auto;position:relative;padding-bottom:90px;}
     
-    /* Header */
     .header{background:linear-gradient(135deg,#e8472a,#c73820);padding:20px 20px 24px;color:white;border-bottom-left-radius:24px;border-bottom-right-radius:24px;box-shadow:0 4px 12px rgba(232,71,42,0.15);}
     .header h1{font-size:26px;font-weight:800;letter-spacing:-0.5px;}
     .header p{font-size:13px;opacity:0.9;margin-top:2px;font-weight:500;}
     
     .content{padding:16px}
     
-    /* UI Elements Generici */
     .card{background:white;border-radius:20px;padding:20px;margin-bottom:12px;box-shadow:0 4px 16px rgba(0,0,0,.04);}
     .row{display:flex;gap:10px}
     .inp{flex:1;padding:12px 16px;border:1.5px solid #eaeaea;border-radius:14px;font-size:15px;outline:none;font-family:inherit;transition:border-color 0.2s;}
@@ -36,14 +34,12 @@
     .btn-blue{background:#2196f3;color:white;box-shadow:0 4px 12px rgba(33,150,243,0.2);}
     .btn-wa{background:#25d366;color:white;box-shadow:0 4px 12px rgba(37,211,102,0.2);}
     
-    /* Chips */
     .chip-row{display:flex;gap:10px;overflow-x:auto;padding-bottom:8px;margin-bottom:12px;scrollbar-width:none;}
     .chip-row::-webkit-scrollbar{display:none;}
     .chip{padding:8px 16px;border-radius:24px;border:none;cursor:pointer;white-space:nowrap;font-size:14px;font-family:inherit;transition:all 0.2s;}
     .chip.on{background:#222;color:white;font-weight:700;box-shadow:0 4px 10px rgba(0,0,0,0.15);}
     .chip.off{background:white;color:#666;box-shadow:0 2px 6px rgba(0,0,0,0.03);border:1px solid #f0f0f0;}
     
-    /* Recipe Card - LISTA COMPATTA (Task 1) */
     .recipe-card{background:white;border-radius:18px;margin-bottom:12px;box-shadow:0 4px 12px rgba(0,0,0,.04);cursor:pointer;display:flex;flex-direction:row;align-items:center;border:none;border-left:4px solid #e8472a;transition:transform 0.1s;}
     .recipe-card:active{transform:scale(0.98);}
     .recipe-card-img{width:85px;height:85px;object-fit:cover;border-radius:12px;margin:12px 0 12px 12px;flex-shrink:0;box-shadow:0 2px 8px rgba(0,0,0,0.08);}
@@ -51,7 +47,6 @@
     .recipe-card h3{font-weight:700;font-size:16px;color:#222;margin-bottom:6px;line-height:1.2;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;}
     .meta{display:flex;gap:10px;font-size:12px;color:#888;flex-wrap:wrap;}
     
-    /* Dettaglio Ricetta */
     .recipe-hero{width:100%;height:220px;object-fit:cover;border-radius:16px;margin-bottom:20px;display:block;box-shadow:0 4px 16px rgba(0,0,0,0.1);}
     .step{display:flex;gap:12px;margin-bottom:14px;}
     .step-num{min-width:26px;height:26px;border-radius:50%;background:#e8472a;color:white;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:700;flex-shrink:0;}
@@ -69,21 +64,18 @@
     label.lbl{font-size:13px;color:#888;display:block;margin-bottom:6px;font-weight:600;}
     select.sel{padding:12px 16px;border:1.5px solid #eaeaea;border-radius:12px;font-size:15px;width:100%;background:#fafafa;font-family:inherit;outline:none;}
     
-    /* Loading Overlay */
     .loading-overlay{position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(255,255,255,0.92);backdrop-filter:blur(5px);display:flex;flex-direction:column;align-items:center;justify-content:center;z-index:9999;}
     .loading-spinner{width:54px;height:54px;border:4px solid #eee;border-top:4px solid #e8472a;border-radius:50%;animation:spin 0.8s linear infinite;margin-bottom:20px;}
     @keyframes spin{to{transform:rotate(360deg)}}
     .loading-text{font-size:17px;color:#222;font-weight:700;}
     .loading-sub{font-size:14px;color:#888;margin-top:8px;}
     
-    /* Bottom Navigation Bar (Task 2) */
     .bottom-nav{position:fixed;bottom:0;left:50%;transform:translateX(-50%);width:100%;max-width:480px;background:rgba(255,255,255,0.98);backdrop-filter:blur(10px);display:flex;justify-content:space-around;padding:12px 0 calc(12px + env(safe-area-inset-bottom));box-shadow:0 -4px 24px rgba(0,0,0,0.06);z-index:900;border-top-left-radius:24px;border-top-right-radius:24px;}
     .nav-btn{flex:1;display:flex;flex-direction:column;align-items:center;background:none;border:none;color:#999;font-size:11px;font-weight:600;cursor:pointer;gap:4px;}
     .nav-btn .icon{font-size:22px;margin-bottom:2px;filter:grayscale(100%) opacity(0.6);transition:all 0.2s;}
     .nav-btn.active{color:#e8472a;}
     .nav-btn.active .icon{filter:none;transform:scale(1.15);}
 
-    /* Floating Action Button & Modal (Task 3) */
     .fab-container{position:fixed;bottom:90px;left:50%;transform:translateX(-50%);width:100%;max-width:480px;pointer-events:none;z-index:950;}
     .fab{position:absolute;right:20px;bottom:0;pointer-events:auto;background:#e8472a;color:white;width:60px;height:60px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:32px;font-weight:300;box-shadow:0 6px 16px rgba(232,71,42,0.4);cursor:pointer;transition:transform 0.2s;}
     .fab:active{transform:scale(0.9);}
@@ -92,7 +84,6 @@
     .modal-content{background:white;width:100%;max-width:480px;border-top-left-radius:28px;border-top-right-radius:28px;padding:24px 24px calc(24px + env(safe-area-inset-bottom));box-shadow:0 -10px 40px rgba(0,0,0,0.1);animation:slideUp 0.3s cubic-bezier(0.16, 1, 0.3, 1);}
     @keyframes slideUp{from{transform:translateY(100%);}to{transform:translateY(0);}}
 
-    /* SPESA COLLASSABILE */
     .spesa-group{background:white;border-radius:18px;margin-bottom:14px;box-shadow:0 4px 12px rgba(0,0,0,.04);overflow:hidden;}
     .spesa-group-header{display:flex;align-items:center;justify-content:space-between;padding:16px;cursor:pointer;user-select:none;}
     .spesa-group-left{display:flex;align-items:center;gap:12px;}
@@ -106,7 +97,6 @@
     .spesa-body{display:none;border-top:1px solid #f5f5f5;}
     .spesa-body.open{display:block;}
     
-    /* CATEGORIA COLORI */
     .cat-section{margin-bottom:0;}
     .cat-header{display:flex;align-items:center;gap:8px;padding:10px 16px;background:#fafafa;}
     .cat-dot{width:10px;height:10px;border-radius:50%;flex-shrink:0;}
@@ -114,9 +104,29 @@
     .share-row{display:flex;gap:10px;margin-bottom:16px;flex-wrap:wrap;}
     .backup-row{display:flex;gap:10px;margin-top:14px;}
     
+    /* DARK MODE AUTOMATICA */
+    @media (prefers-color-scheme: dark) {
+      body { background: #121212; }
+      .card, .recipe-card, .bottom-nav, .modal-content, .spesa-group, .chip.off { background: #1e1e1e; box-shadow: 0 4px 16px rgba(0,0,0,0.3); border:none; }
+      .header h1, .recipe-card h3, .sec-title, .spesa-group-title, .cat-label { color: #ffffff !important; }
+      h3, div { color: #e0e0e0; }
+      .inp, select.sel, textarea.inp { background: #2c2c2c; border-color: #444; color: #fff; }
+      .inp:focus { border-color: #e8472a; }
+      .note-personal { background: #1a2634; color: #cce0ff; border-left-color: #2196f3; }
+      .note-ai { background: #2a2015; color: #ffdb99; border-left-color: #ff9800; }
+      .cat-header { background: #252525; }
+      .chip.off { color: #aaa; border-color: #444; }
+      .nav-btn { color: #777; }
+      .back { color: #ff8a65; }
+      .ing-row, .step > div { color: #ccc !important; border-bottom-color: #333; }
+      .spesa-body { border-top-color: #333; }
+      .check-box { background: #2c2c2c; border-color: #555; }
+      .empty .ico { filter: grayscale(50%) opacity(0.7); }
+    }
+
     @media print {
       body{background:white}
-      #app .header,.bottom-nav,.fab-container,.back,.share-row,.row.action-row,.loading-overlay{display:none!important}
+      #app .header,.bottom-nav,.fab-container,.back,.share-row,.row.action-row,.loading-overlay,#search-container{display:none!important}
       .card{box-shadow:none;border:none;padding:0}
       .recipe-hero{height:150px}
       .content{padding:0}
@@ -131,8 +141,15 @@
     <p>Il tuo ricettario smart</p>
   </div>
   
+  <!-- Barra di ricerca fissa -->
+  <div id="search-container" style="padding: 16px 16px 0 16px; display:none;">
+    <input id="mainSearchInput" class="inp" style="width:100%; padding:14px 18px; border-radius:18px; box-shadow:0 4px 12px rgba(0,0,0,.03); border:none; background:white;"
+      placeholder="🔍 Cerca ricetta o ingrediente..." oninput="updateSearch(this.value)"/>
+  </div>
+  
   <div class="content" id="content"></div>
 
+  <!-- Bottom Navigation -->
   <nav class="bottom-nav">
     <button class="nav-btn" id="nav-ricette" onclick="nav('ricette')">
       <span class="icon">🍽️</span><span>Ricette</span>
@@ -145,11 +162,13 @@
     </button>
   </nav>
 
+  <!-- Floating Action Button Container -->
   <div class="fab-container" id="fabContainer" style="display:none;">
     <div class="fab" onclick="openModal()">+</div>
   </div>
 </div>
 
+<!-- Modal Overlay per Importazione -->
 <div class="modal-overlay" id="importModal" style="display:none" onclick="if(event.target===this)closeModal()">
   <div class="modal-content">
     <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:20px;">
@@ -173,6 +192,7 @@
   </div>
 </div>
 
+<!-- Loading Overlay -->
 <div class="loading-overlay" id="loadingOverlay" style="display:none">
   <div class="loading-spinner"></div>
   <div class="loading-text">⏳ Elaborazione in corso...</div>
@@ -426,7 +446,19 @@ function importBackup(e){
   reader.readAsText(file); e.target.value="";
 }
 
-function nav(t){ S.tab=t; S.selected=null; S.error=""; S.editingNote=false; render(); }
+function nav(t){ 
+  S.tab=t; 
+  S.selected=null; 
+  S.error=""; 
+  S.editingNote=false; 
+  
+  // Svuotiamo la barra di ricerca quando cambiamo tab
+  const searchInp = document.getElementById("mainSearchInput");
+  if(searchInp) searchInp.value = "";
+  S.search = "";
+  
+  render(); 
+}
 
 function render(){
   // Aggiorna Bottom Navigation
@@ -434,11 +466,14 @@ function render(){
     b.classList.toggle("active",["ricette","ricettari","spesa"][i]===S.tab);
   });
   
-  // Mostra/Nascondi FAB solo nel tab ricette principale
+  // Mostra/Nascondi la barra di ricerca e il FAB solo nel tab ricette principale
+  const searchBox = document.getElementById("search-container");
   const fab = document.getElementById("fabContainer");
   if(S.tab === "ricette" && !S.selected) {
+    searchBox.style.display = "block";
     fab.style.display = "block";
   } else {
+    searchBox.style.display = "none";
     fab.style.display = "none";
   }
 
@@ -446,6 +481,42 @@ function render(){
   if(S.tab==="ricette") c.innerHTML=S.selected?detailHTML():listHTML();
   if(S.tab==="ricettari") c.innerHTML=cbHTML();
   if(S.tab==="spesa") c.innerHTML=shoppingHTML();
+}
+
+function updateSearch(val) {
+  S.search = val;
+  const filtered=S.recipes.filter(r=>{
+    const mc=S.filter==="Tutti"||r.ricettario===S.filter;
+    const q=S.search.toLowerCase();
+    const ms=!q||(r.titolo&&r.titolo.toLowerCase().includes(q))||
+      (r.ingredienti&&r.ingredienti.some(i=>i.toLowerCase().includes(q)))||
+      (r.notaPersonale&&r.notaPersonale.toLowerCase().includes(q));
+    return mc&&ms;
+  });
+  
+  const listContainer = document.querySelector(".content");
+  if(listContainer && S.tab === "ricette" && !S.selected) {
+    const chips=["Tutti",...S.cookbooks].map(c=>
+      `<button class="chip ${S.filter===c?'on':'off'}" onclick="S.filter='${c}';render()">${c}</button>`
+    ).join("");
+    
+    const list=filtered.length===0
+      ?`<div class="empty"><div class="ico">🍳</div><div style="font-size:16px;color:#888;font-weight:500">${S.search?'Nessun risultato per "'+S.search+'"':"Nessuna ricetta.<br>Tocca il tasto + per iniziare!"}</div></div>`
+      :filtered.map(r=>`
+        <div class="recipe-card" onclick="S.selected=S.recipes.find(x=>x.id===${r.id});S.noteText=S.selected.notaPersonale||'';S.editingNote=false;render()">
+          ${r.image?`<img class="recipe-card-img" src="${r.image}" alt="${r.titolo}" onerror="this.style.display='none'">`:""}
+          <div class="recipe-card-body">
+            <h3>${r.titolo}</h3>
+            <div class="meta">
+              ${r.tempoPreparazione?`<span>⏱ ${r.tempoPreparazione}</span>`:""}
+              ${r.porzioni?`<span>👥 ${r.porzioni}</span>`:""}
+              <span>📚 ${r.ricettario}</span>
+            </div>
+          </div>
+        </div>`).join("");
+        
+    listContainer.innerHTML = `<div class="chip-row" style="margin-top: 8px;">${chips}</div>${list}`;
+  }
 }
 
 function listHTML(){
@@ -478,12 +549,7 @@ function listHTML(){
       </div>`).join("");
       
   return `
-    <div style="margin-bottom:16px">
-      <input class="inp" style="width:100%;padding:14px 18px;border-radius:18px;box-shadow:0 4px 12px rgba(0,0,0,.03);border:none;background:white;"
-        placeholder="🔍 Cerca ricetta o ingrediente..."
-        value="${S.search}" oninput="S.search=this.value;render()"/>
-    </div>
-    <div class="chip-row">${chips}</div>
+    <div class="chip-row" style="margin-top: 8px;">${chips}</div>
     ${list}
   `;
 }

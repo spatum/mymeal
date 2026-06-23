@@ -11,7 +11,7 @@
   <link rel="manifest" href="manifest.json" />
   <style>
     *{box-sizing:border-box;margin:0;padding:0; -webkit-tap-highlight-color: transparent;}
-    body{font-family:'Segoe UI',system-ui,sans-serif;background:#f5f5f3;min-height:100vh;}
+    body{font-family:'Segoe UI',system-ui,sans-serif;background:#f5f5f3;min-height:100vh;color:#333;}
     #app{max-width:480px;margin:0 auto;position:relative;padding-bottom:90px;}
     
     .header{background:linear-gradient(135deg,#e8472a,#c73820);padding:20px 20px 24px;color:white;border-bottom-left-radius:24px;border-bottom-right-radius:24px;box-shadow:0 4px 12px rgba(232,71,42,0.15);}
@@ -22,7 +22,7 @@
     
     .card{background:white;border-radius:20px;padding:20px;margin-bottom:12px;box-shadow:0 4px 16px rgba(0,0,0,.04);}
     .row{display:flex;gap:10px}
-    .inp{flex:1;padding:12px 16px;border:1.5px solid #eaeaea;border-radius:14px;font-size:15px;outline:none;font-family:inherit;transition:border-color 0.2s;}
+    .inp{flex:1;padding:12px 16px;border:1.5px solid #eaeaea;border-radius:14px;font-size:15px;color:#333;outline:none;font-family:inherit;transition:border-color 0.2s;}
     .inp:focus{border-color:#e8472a;}
     .btn{padding:12px 20px;border:none;border-radius:14px;cursor:pointer;font-weight:700;font-size:15px;font-family:inherit;transition:transform 0.1s, opacity 0.2s;}
     .btn:active{transform:scale(0.98);}
@@ -104,26 +104,6 @@
     .share-row{display:flex;gap:10px;margin-bottom:16px;flex-wrap:wrap;}
     .backup-row{display:flex;gap:10px;margin-top:14px;}
     
-    /* DARK MODE AUTOMATICA */
-    @media (prefers-color-scheme: dark) {
-      body { background: #121212; }
-      .card, .recipe-card, .bottom-nav, .modal-content, .spesa-group, .chip.off { background: #1e1e1e; box-shadow: 0 4px 16px rgba(0,0,0,0.3); border:none; }
-      .header h1, .recipe-card h3, .sec-title, .spesa-group-title, .cat-label { color: #ffffff !important; }
-      h3, div { color: #e0e0e0; }
-      .inp, select.sel, textarea.inp { background: #2c2c2c; border-color: #444; color: #fff; }
-      .inp:focus { border-color: #e8472a; }
-      .note-personal { background: #1a2634; color: #cce0ff; border-left-color: #2196f3; }
-      .note-ai { background: #2a2015; color: #ffdb99; border-left-color: #ff9800; }
-      .cat-header { background: #252525; }
-      .chip.off { color: #aaa; border-color: #444; }
-      .nav-btn { color: #777; }
-      .back { color: #ff8a65; }
-      .ing-row, .step > div { color: #ccc !important; border-bottom-color: #333; }
-      .spesa-body { border-top-color: #333; }
-      .check-box { background: #2c2c2c; border-color: #555; }
-      .empty .ico { filter: grayscale(50%) opacity(0.7); }
-    }
-
     @media print {
       body{background:white}
       #app .header,.bottom-nav,.fab-container,.back,.share-row,.row.action-row,.loading-overlay,#search-container{display:none!important}
@@ -141,15 +121,13 @@
     <p>Il tuo ricettario smart</p>
   </div>
   
-  <!-- Barra di ricerca fissa -->
   <div id="search-container" style="padding: 16px 16px 0 16px; display:none;">
-    <input id="mainSearchInput" class="inp" style="width:100%; padding:14px 18px; border-radius:18px; box-shadow:0 4px 12px rgba(0,0,0,.03); border:none; background:white;"
+    <input id="mainSearchInput" class="inp" style="width:100%; padding:14px 18px; border-radius:18px; box-shadow:0 4px 12px rgba(0,0,0,.03); border:none; background:white; color:#333;"
       placeholder="🔍 Cerca ricetta o ingrediente..." oninput="updateSearch(this.value)"/>
   </div>
   
   <div class="content" id="content"></div>
 
-  <!-- Bottom Navigation -->
   <nav class="bottom-nav">
     <button class="nav-btn" id="nav-ricette" onclick="nav('ricette')">
       <span class="icon">🍽️</span><span>Ricette</span>
@@ -162,13 +140,11 @@
     </button>
   </nav>
 
-  <!-- Floating Action Button Container -->
   <div class="fab-container" id="fabContainer" style="display:none;">
     <div class="fab" onclick="openModal()">+</div>
   </div>
 </div>
 
-<!-- Modal Overlay per Importazione -->
 <div class="modal-overlay" id="importModal" style="display:none" onclick="if(event.target===this)closeModal()">
   <div class="modal-content">
     <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:20px;">
@@ -179,9 +155,9 @@
     <div id="modalError" class="err" style="display:none; margin-bottom:16px;"></div>
 
     <div style="font-weight:700;font-size:14px;margin-bottom:8px;color:#333">🔗 Importa da URL</div>
-    <div class="row" style="margin-bottom: 20px;">
-      <input id="urlInp" class="inp" placeholder="Link YouTube, sito, blog..." onkeydown="if(event.key==='Enter')importRecipe()"/>
-      <button class="btn btn-red" onclick="importRecipe()">Importa</button>
+    <div style="display:flex; flex-direction:column; gap:12px; margin-bottom: 24px;">
+      <input id="urlInp" class="inp" style="width:100%" placeholder="Link YouTube, sito, blog..." onkeydown="if(event.key==='Enter')importRecipe()"/>
+      <button class="btn btn-red" style="width:100%" onclick="importRecipe()">Importa</button>
     </div>
 
     <div style="text-align:center; color:#ccc; font-size:12px; margin-bottom:20px; font-weight:600; text-transform:uppercase;">oppure</div>
@@ -192,7 +168,6 @@
   </div>
 </div>
 
-<!-- Loading Overlay -->
 <div class="loading-overlay" id="loadingOverlay" style="display:none">
   <div class="loading-spinner"></div>
   <div class="loading-text">⏳ Elaborazione in corso...</div>

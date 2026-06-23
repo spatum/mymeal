@@ -488,19 +488,16 @@ function updateSearch(val) {
   const filtered = S.recipes.filter(r => {
     const mc = S.filter === "Tutti" || r.ricettario === S.filter;
     
-    // 1. Pulizia: rimuove virgole, punti e isola solo le parole vere (ignora "e", "con", ecc.)
+    // 1. Pulizia: rimuove virgole, punti e isola solo le parole vere
     const cleanTerms = S.search.toLowerCase()
       .replace(/[,;.\-]/g, ' ')
       .trim()
       .split(/\s+/)
       .filter(t => t && !["e", "ed", "con", "di", "o", "il", "la", "i", "le"].includes(t));
       
-    // Se la barra di ricerca è vuota, mostra tutto
     if (cleanTerms.length === 0) return mc; 
 
-    // 2. Controllo incrociato
-    // TRUCCO: Cambia la parola "every" con "some" se vuoi che la ricerca trovi 
-    // le ricette che contengono "O uno O l'altro" invece di "SIA uno SIA l'altro"
+    // 2. LOGICA "TUTTI" (AND): la ricetta DEVE contenere TUTTI gli ingredienti digitati
     const ms = cleanTerms.every(t => { 
       const term = t.length > 3 ? t.replace(/[aeiou]$/i, '') : t;
       return (r.titolo && r.titolo.toLowerCase().includes(term)) ||
@@ -517,8 +514,9 @@ function updateSearch(val) {
       `<button class="chip ${S.filter===c?'on':'off'}" onclick="S.filter='${c}';render()">${c}</button>`
     ).join("");
     
+    // Aggiornata la dicitura di "nessun risultato" per essere più chiara
     const list=filtered.length===0
-      ?`<div class="empty"><div class="ico">🍳</div><div style="font-size:16px;color:#888;font-weight:500">${S.search?'Nessun risultato per "'+S.search+'"':"Nessuna ricetta.<br>Tocca il tasto + per iniziare!"}</div></div>`
+      ?`<div class="empty"><div class="ico">🍳</div><div style="font-size:16px;color:#888;font-weight:500">${S.search?'Nessuna ricetta contiene tutti questi ingredienti insieme.':"Nessuna ricetta.<br>Tocca il tasto + per iniziare!"}</div></div>`
       :filtered.map(r=>`
         <div class="recipe-card" onclick="S.selected=S.recipes.find(x=>x.id===${r.id});S.noteText=S.selected.notaPersonale||'';S.editingNote=false;render()">
           ${r.image?`<img class="recipe-card-img" src="${r.image}" alt="${r.titolo}" onerror="this.style.display='none'">`:""}
@@ -540,19 +538,16 @@ function listHTML(){
   const filtered = S.recipes.filter(r => {
     const mc = S.filter === "Tutti" || r.ricettario === S.filter;
     
-    // 1. Pulizia: rimuove virgole, punti e isola solo le parole vere (ignora "e", "con", ecc.)
+    // 1. Pulizia: rimuove virgole, punti e isola solo le parole vere
     const cleanTerms = S.search.toLowerCase()
       .replace(/[,;.\-]/g, ' ')
       .trim()
       .split(/\s+/)
       .filter(t => t && !["e", "ed", "con", "di", "o", "il", "la", "i", "le"].includes(t));
       
-    // Se la barra di ricerca è vuota, mostra tutto
     if (cleanTerms.length === 0) return mc; 
 
-    // 2. Controllo incrociato
-    // TRUCCO: Cambia la parola "every" con "some" se vuoi che la ricerca trovi 
-    // le ricette che contengono "O uno O l'altro" invece di "SIA uno SIA l'altro"
+    // 2. LOGICA "TUTTI" (AND): la ricetta DEVE contenere TUTTI gli ingredienti digitati
     const ms = cleanTerms.every(t => { 
       const term = t.length > 3 ? t.replace(/[aeiou]$/i, '') : t;
       return (r.titolo && r.titolo.toLowerCase().includes(term)) ||
@@ -562,6 +557,32 @@ function listHTML(){
     
     return mc && ms;
   });
+  
+  const chips=["Tutti",...S.cookbooks].map(c=>
+    `<button class="chip ${S.filter===c?'on':'off'}" onclick="S.filter='${c}';render()">${c}</button>`
+  ).join("");
+  
+  // Aggiornata la dicitura di "nessun risultato"
+  const list=filtered.length===0
+    ?`<div class="empty"><div class="ico">🍳</div><div style="font-size:16px;color:#888;font-weight:500">${S.search?'Nessuna ricetta contiene tutti questi ingredienti insieme.':"Nessuna ricetta.<br>Tocca il tasto + per iniziare!"}</div></div>`
+    :filtered.map(r=>`
+      <div class="recipe-card" onclick="S.selected=S.recipes.find(x=>x.id===${r.id});S.noteText=S.selected.notaPersonale||'';S.editingNote=false;render()">
+        ${r.image?`<img class="recipe-card-img" src="${r.image}" alt="${r.titolo}" onerror="this.style.display='none'">`:""}
+        <div class="recipe-card-body">
+          <h3>${r.titolo}</h3>
+          <div class="meta">
+            ${r.tempoPreparazione?`<span>⏱ ${r.tempoPreparazione}</span>`:""}
+            ${r.porzioni?`<span>👥 ${r.porzioni}</span>`:""}
+            <span>📚 ${r.ricettario}</span>
+          </div>
+        </div>
+      </div>`).join("");
+      
+  return `
+    <div class="chip-row" style="margin-top: 8px;">${chips}</div>
+    ${list}
+  `;
+}
   
   const chips=["Tutti",...S.cookbooks].map(c=>
     `<button class="chip ${S.filter===c?'on':'off'}" onclick="S.filter='${c}';render()">${c}</button>`

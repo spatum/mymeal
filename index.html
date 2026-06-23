@@ -413,9 +413,34 @@ function importBackup(e){
     try {
       const data=JSON.parse(ev.target.result);
       if(!data.recipes||!Array.isArray(data.recipes)) throw new Error("File non valido");
-      if(!confirm("⚠️ Vuoi ripristinare il backup?\n\nLe ricette attuali verranno sostituite con quelle del backup.\n\nProcedere?")) return;
-      S.recipes=data.recipes||[]; S.cookbooks=data.cookbooks||[...DEFAULT_CB]; S.shopping=data.shopping||[]; S.openGroups={};
-      save(); render(); alert("✅ Backup ripristinato!\n"+S.recipes.length+" ricette caricate.");
+      
+      if(!confirm("⚠️ Vuoi unire questo backup?\n\nLe nuove ricette e i nuovi ricettari verranno aggiunti all'app senza cancellare i tuoi dati attuali.\n\nProcedere?")) return;
+      
+      let addedCount = 0;
+      // Creiamo un elenco degli ID delle ricette già presenti per evitare doppioni
+      const existingIds = new Set(S.recipes.map(r => r.id));
+      
+      // Aggiungiamo solo le ricette che non esistono ancora
+      data.recipes.forEach(r => {
+        if(!existingIds.has(r.id)){
+          S.recipes.push(r);
+          existingIds.add(r.id);
+          addedCount++;
+        }
+      });
+      
+      // Riordiniamo le ricette mettendo le più recenti in cima (basandoci sull'ID temporale)
+      S.recipes.sort((a,b) => b.id - a.id);
+      
+      // Uniamo i ricettari saltando i duplicati
+      if(data.cookbooks){
+        data.cookbooks.forEach(cb => {
+          if(!S.cookbooks.includes(cb)) S.cookbooks.push(cb);
+        });
+      }
+      
+      save(); render(); 
+      alert("✅ Backup unito con successo!\nSono state aggiunte " + addedCount + " nuove ricette.");
     } catch(err){ alert("❌ File non valido.\nAssicurati di usare un file di backup MyMeal."); }
   };
   reader.readAsText(file); e.target.value="";

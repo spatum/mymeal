@@ -487,10 +487,18 @@ function updateSearch(val) {
   S.search = val;
   const filtered=S.recipes.filter(r=>{
     const mc=S.filter==="Tutti"||r.ricettario===S.filter;
-    const q=S.search.toLowerCase();
-    const ms=!q||(r.titolo&&r.titolo.toLowerCase().includes(q))||
-      (r.ingredienti&&r.ingredienti.some(i=>i.toLowerCase().includes(q)))||
-      (r.notaPersonale&&r.notaPersonale.toLowerCase().includes(q));
+    
+    // Dividiamo la ricerca in parole singole usando gli spazi
+    const terms = S.search.toLowerCase().trim().split(/\s+/);
+    
+    // Verifichiamo che OGNI parola digitata sia presente da qualche parte
+    const ms = terms.every(term => 
+      !term || 
+      (r.titolo && r.titolo.toLowerCase().includes(term)) ||
+      (r.ingredienti && r.ingredienti.some(i => i.toLowerCase().includes(term))) ||
+      (r.notaPersonale && r.notaPersonale.toLowerCase().includes(term))
+    );
+    
     return mc&&ms;
   });
   
@@ -522,10 +530,18 @@ function updateSearch(val) {
 function listHTML(){
   const filtered=S.recipes.filter(r=>{
     const mc=S.filter==="Tutti"||r.ricettario===S.filter;
-    const q=S.search.toLowerCase();
-    const ms=!q||(r.titolo&&r.titolo.toLowerCase().includes(q))||
-      (r.ingredienti&&r.ingredienti.some(i=>i.toLowerCase().includes(q)))||
-      (r.notaPersonale&&r.notaPersonale.toLowerCase().includes(q));
+    
+    // Dividiamo la ricerca in parole singole usando gli spazi
+    const terms = S.search.toLowerCase().trim().split(/\s+/);
+    
+    // Verifichiamo che OGNI parola digitata sia presente da qualche parte
+    const ms = terms.every(term => 
+      !term || 
+      (r.titolo && r.titolo.toLowerCase().includes(term)) ||
+      (r.ingredienti && r.ingredienti.some(i => i.toLowerCase().includes(term))) ||
+      (r.notaPersonale && r.notaPersonale.toLowerCase().includes(term))
+    );
+    
     return mc&&ms;
   });
   

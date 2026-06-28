@@ -290,9 +290,9 @@ async function importRecipe(){
     
     showLoading(true,"L'AI sta estraendo la ricetta...");
     const json=await callClaude(
-      "Analizza questo contenuto e ricava la ricetta.\n"+context+
+      "Analizza questo contenuto, ricava la ricetta e stima i valori nutrizionali per singola porzione (es. '400 kcal', '20g', ecc.).\n"+context+
       "\nRispondi SOLO con JSON valido senza backtick:\n"+
-      '{"titolo":"...","ingredienti":["..."],"istruzioni":["..."],"tempoPreparazione":"...","porzioni":"...","note":""}'
+      '{"titolo":"...","ingredienti":["..."],"istruzioni":["..."],"tempoPreparazione":"...","porzioni":"...","note":"","calorie":"...","proteine":"...","carboidrati":"...","grassi":"..."}'
     );
     const r=JSON.parse(json);
     r.id=Date.now(); r.url=url; r.image=page.image||"";
@@ -320,9 +320,9 @@ async function importFromText(){
   
   try {
     const json=await callClaude(
-      "Estrai la ricetta da questo testo.\n"+txt+
+      "Estrai la ricetta da questo testo e stima i valori nutrizionali per singola porzione (es. '400 kcal', '20g', ecc.).\n"+txt+
       "\nRispondi SOLO con JSON valido senza backtick:\n"+
-      '{"titolo":"...","ingredienti":["..."],"istruzioni":["..."],"tempoPreparazione":"...","porzioni":"...","note":""}'
+      '{"titolo":"...","ingredienti":["..."],"istruzioni":["..."],"tempoPreparazione":"...","porzioni":"...","note":"","calorie":"...","proteine":"...","carboidrati":"...","grassi":"..."}'
     );
     const r=JSON.parse(json);
     r.id=Date.now(); r.url=""; r.image="";
@@ -595,10 +595,20 @@ function detailHTML(){
     <div class="card" style="padding:16px;">
       ${r.image?`<img class="recipe-hero" src="${r.image}" alt="${r.titolo}" onerror="this.style.display='none'">`:""}
       <div style="font-weight:800;font-size:22px;color:#222;margin-bottom:10px;line-height:1.2;">${r.titolo}</div>
-      <div class="meta" style="margin-bottom:16px; font-size:14px;">
+      
+      <div class="meta" style="margin-bottom:12px; font-size:14px;">
         ${r.tempoPreparazione?`<span>⏱ ${r.tempoPreparazione}</span>`:""}
         ${r.porzioni?`<span>👥 ${r.porzioni} porzioni</span>`:""}
+        ${r.calorie?`<span>🔥 ${r.calorie}</span>`:""}
       </div>
+      
+      ${r.proteine ? `
+      <div style="display:flex; gap:8px; margin-bottom:20px; font-size:12px; font-weight:700;">
+        <div style="background:#e3f2fd; color:#1565c0; padding:6px 10px; border-radius:8px;">🥩 PRO: ${r.proteine}</div>
+        <div style="background:#fff8e1; color:#f57f17; padding:6px 10px; border-radius:8px;">🍞 CARBO: ${r.carboidrati}</div>
+        <div style="background:#fce4ec; color:#c2185b; padding:6px 10px; border-radius:8px;">🥑 GRASSI: ${r.grassi}</div>
+      </div>` : `<div style="margin-bottom:20px;"></div>`}
+      
       <div class="share-row">
         <button class="btn btn-wa" style="flex:1;padding:10px 0;font-size:14px" onclick="shareWhatsApp()">💬 WhatsApp</button>
         <button class="btn btn-blue" style="flex:1;padding:10px 0;font-size:14px" onclick="shareEmail()">✉️ Email</button>
